@@ -1,0 +1,356 @@
+
+\chapter{Eric Andow}
+
+\begin{enumerate}
+  \item 1. Most programming languages require the use of brackets to
+    enclose the index in a reference to an element of an array.
+  \begin{enumerate}
+    \item Identify a language the requires the use of parentheses
+      to enclose the index in a reference to an element of an array.
+    \item Why did the designers of the language choose parentheses
+      rather than brackets?
+    \end{enumerate}
+
+  \begin{answer}
+
+  \begin{enumerate}
+    \item Ada is one example that uses parentheses to reference array elements.
+    \item In the case of Ada, the designers chose to use a uniform
+      style for function calls and array references because,
+      ultimately, both represent a mapping to a specific point in
+      memory.
+    \end{enumerate}
+
+    \end{answer}
+    
+  \item 2. What is the relationship between a lexeme and a token?
+
+  \begin{answer}
+
+    A lexeme is an association that the compiler uses to understand
+    your code. So, a number is understood as an integer literal and an
+    equal sign is understood as an equivalence operator. The lexemes
+    are then grouped into categories, called tokens. While a lexeme
+    appears verbatim in your code, a token is a name that only the
+    compiler uses, like 'equal\_sign' or 'mult\_op'.
+
+    \end{answer}
+
+  \item 3.
+  \begin{enumerate}
+    \item What kind of symbols are found at the internal nodes of a
+      parse tree?
+    \item What kind of symbols are found at the leaves of a parse tree?
+    \end{enumerate}
+
+  \begin{answer}
+
+  \begin{enumerate}
+    \item The internal nodes of a parse tree are non-terminal symbols,
+      which branch out into other symbols.
+    \item At the leaves of the tree lie terminal symbols, each of
+      which represents an atom of the original code.
+    \end{enumerate}
+
+    \end{answer}
+
+
+  \item 4. One of the most significant contributions from the developers
+    of ALGOL 60 also limited the success of that language. What was
+    that contribution?
+
+  \begin{answer}
+
+    ALGOL 60 heralded the first use of the BNF formalism. BNF stands
+    for Backus-Naur form, one of the primary ways of describing the
+    syntax of programming languages. Unfortunately, when it was
+    introduced, BNF was seen as too complicated. The slow shift
+    towards accepting BNF would come too late for ALGOL 60 to ever
+    gain a foothold among users.
+
+    \end{answer}
+
+  \item 5. What problem were the creators of Common LISP trying to solve?
+
+  \begin{answer}
+
+    As the Reagan era commenced, Americans were facing tougher
+    problems than they knew how to deal with. Namely, they had too
+    many dialects of Lisp. Like having too many dialects of any
+    language, this caused widespread strife and factionalism among
+    those who were left with no way to communicate. To bring their
+    colleagues back to the table of brotherhood, a few brave
+    developers created Common Lisp, a language which included features
+    of several popular Lisp dialects. In this way, the developers gave
+    the many dialects a unified way to communicate.
+
+    \end{answer}
+
+  \item 6. What is an ambiguous context free grammar?
+
+  \begin{answer}
+
+    Grammar?? But seriously, an ambiguous grammar is a sort of context-free grammar (one for which a parse tree can be generated) which can produce more than one valid parse tree for some input.
+
+    \end{answer}
+
+  \item 7. Contrast the complexity of algorithms that can parse strings
+    that conform to the most general kinds of context free grammars
+    and the complexity of the algorithms that can parse strings that
+    conform to the grammars of programming languages?
+
+  \begin{answer}
+
+    The most general kinds of context-free grammar require parsers
+    that are of complexity O(n cubed), because they often make
+    mistakes and must rebuild parts of the parse tree. Any
+    commercially viable algorithm (the kind used to parse programming
+    languages for compilers) will only operate on a subset of the
+    grammars, but it will be of complexity O(n).
+
+    \end{answer}
+
+  \item 8. Java represents characters with Unicode. It is the first
+    widely used programming language with this feature. What is the
+    significance of this feature?
+
+  \begin{answer}
+
+    Most languages support ASCII, a character set which only includes
+    the english alphabet, plus special characters. UCS-2 is a standard
+    developed by the Unicode Consortium which supports most character
+    and number systems from around the world. This means that
+    programmers in Thailand don't have to write custom Java to
+    interpret their input; it just works.
+
+    \end{answer}
+
+  \item 9. How does the binary coded decimal type differ from the
+    floating point type?
+
+  \begin{answer}
+
+    A binary coded decimal represents a set of decimal digits to store
+    a decimal number precisely. In contrast, a floating-point number
+    stores a less-precise value and an exponent. This means that
+    floating-point numbers have a much wider range, and take up less
+    memory, but they are less precise (1.0 - 1) might give you
+    something like (0.000000001).
+
+    \end{answer}
+
+  \item 10. Identify a user-defined ordinal type in the Java programming
+    language.
+
+  \begin{answer}
+
+    In 2004, Java added enumeration types, which map a set of discrete
+    values onto a subset of the integers. The user can match any set
+    of labels invisibly to a set of distinct integers.
+
+    \end{answer}
+
+  \item 11. Mathematicians and programmers might have different ideas
+    about the precedence of Boolean operators. Explain.
+
+  \begin{answer}
+
+    For some reason, C-based languages give the AND operator
+    precedence over the OR operator. However, mathematicians will
+    remind you over and over again that the two operators should have
+    equal precedence. They invented Boolean algebra, for crying out
+    loud!
+
+    \end{answer}
+
+  \item 12. Programmers should use \verb+===+ rather than \verb+==+ to
+    test the equality of the values of two expressions in JavaScript. Why?
+
+  \begin{answer}
+
+    In JavaScript, == means test whether the two sides evaluate to the
+    same thing. So, (5+1) == (9-3) returns true. However, this isn't
+    very useful if we want to match the exact expression, for example
+    we want to find a difference between '7' and 7. For those
+    purposes, we use ===, which does not affect the operands before
+    comparing them.
+
+    \end{answer}
+
+  \item 13. Describe a hazard of allowing short-circuited evaluation
+    of expressions and side effects in expressions at the same time.
+
+  \begin{answer}
+
+    Short-circuited evaluations can evaluate only the left-hand side,
+    so if there are side-effects on the right-hand side (as in 'latest
+    > bestSoFar || index++ > size), they might not happen in some
+    cases. When the program decides on side effects at runtime, this
+    can be really difficult to track.
+
+    \end{answer}
+
+  \item 14. Briefly describe the three steps in the mark-sweep algorithm
+    for garbage collection.
+
+  \begin{answer}
+
+    Only run this when you are out of available memory.
+    1. Mark everything to look like garbage.
+    2. For each pointer, mark what it points to as not-garbage.
+    3. All cells that are still marked as garbage are reclaimed. 
+
+    \end{answer}
+
+  \item 15. What led Yukihiro Matsumoto to create the Ruby programming language?
+
+  \begin{answer}
+
+    Matz was unhappy with the neat languages that everyone liked, like
+    Perl and Python. While they allowed you to use objects if you
+    wanted, Matz thought that this was too weak. He wanted a language
+    that would scale without the inelegance of primitive types or
+    functions. Therefore, he built Ruby in the model of Smalltalk: a
+    purely object-oriented language, where even primitive operators
+    were methods and could be re-written.
+
+    \end{answer}
+
+  \item 16. What did Microsoft aim to achieve with its development of the
+    \verb+C#+ language?
+
+  \begin{answer}
+
+    Microsoft wanted all the cool cats to use their .Net framework, so
+    that they could obtain the power of huge market share. To achieve
+    their dreams, they forged \verb+C#+ a weapon meant to combine the
+    power of Java and C++ into a new general purpose programming
+    language. They intended this great power to attract the greedy
+    race of men, who would swarm in countless legions under the banner
+    of .Net.
+
+    \end{answer}
+
+  \end{enumerate}
+
+
+
+\section{More questions for discussion and review.}
+
+\begin{enumerate}
+  \item The design of which machine influenced the design
+    of the control statements in FORTRAN?
+
+  \item How many different kinds of control statements
+    must the designer of a programming language include
+    in a language?
+
+  \item What is the one question that applies in the
+    design of all statements that allow selection or
+    iteration?
+
+  \item What is an advantage of requiring that
+    the \textbf{then} and \textbf{else} clauses of
+    an \textbf{if} statement be compound statements?
+
+  \item How does the \textbf{switch} statement in C\#
+    differ from the \textbf{switch} statement in Java?
+
+  \item Distinguish between 2 statements in Ruby
+    that correspond to Java's \textbf{switch} statement.
+
+  \item Features of a programming language sometimes persist
+    longer than a feature of computing hardware that inspired
+    and supported that part of the language's design.
+    Similarly, features of hardware sometimes persist longer
+    than some parts of a language's design that were created
+    to take advantage of that feature in hardware.
+
+    Give examples.
+
+  \item Who most famously warned of the dangers of using the
+    \textbf{goto} statement? What did Donald Knuth have to
+    say about the use of the \textbf{goto} statement?
+
+  \item Describes Ada's \textbf{for} loop. Are there some
+    kinds of iteration that might be easier in Ada than
+    in Java? Easier in Java than in Ada?
+
+  \item What does it mean to say that the guarded commands
+    of Ada are non-deterministic?
+
+  \item The header files in a C program contain function
+    prototypes. What is a function prototype?
+
+  \item Every method in a Ruby program belongs to a class.
+    A programmer can place a definition of a method inside
+    the definition of a class or outside of the definition
+    of any class that the programmer writes. To which class
+    does the method belong in the second case?
+
+  \item Distinguish between positional and keyword parameters.
+
+  \item Ruby blocks are closures. What does that mean?
+
+  \item What is a pure function?
+
+  \item Some languages give programmers means to define
+    both functions and procedures. Java doe not. Is that
+    a serious limitation?
+
+  \item Declarations of formal parameters in an Ada procedure
+    can include, in addition to the names and types of the
+    parameters, reserved words that do not appear in declarations
+    in Java programs. 
+    What is the purpose of those reserved words?
+ 
+  \item The C language imposes a constraint upon programmers
+    who want to pass a multidimensional array to a function.
+    What is the constraint? How did the design of the Java
+    programming language eliminate that constraint for 
+    programmers who use that language?
+
+  \item An activation record contains a return
+    address, a dynamic link, parameters, and
+    local variables.
+  \begin{enumerate}
+    \item To what does the return address point?
+    \item To what does the dynamic link point?
+    \end{enumerate}
+
+  \item The stack will contain multiple activation
+    records for a single subprogram under what
+    circumstances?
+
+  \item How (or why?) does the LIFO protocol apply to
+    calls to and returns from subprograms?
+
+  \item Which important development in computer architecture
+    has changed the way that the stack is used in some
+    systems for facilitating calls to and returns from
+    subprograms?
+
+  \item A dynamic chain contains a history of what?
+
+  \item Which two numbers are needed to compute
+    the address of a local variable in a subprogram?
+
+  \item How does a Ruby module differ from a class?
+
+  \item Memory for variables can be allocated on the heap
+    and on the stack. In which place or places is memory
+    allocated for objects in C++? in Java?
+
+  \item What problems were solved by the addition
+    of genericity to Java?
+
+  \item What is the purpose of the static chain?
+
+  \item What is a singleton?
+
+  \item What are the two parts of the definition 
+    of an abstract data type?
+
+  \end{enumerate}
+
+

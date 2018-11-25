@@ -1,0 +1,16 @@
+New York,Los Angeles,10.0
+New York,Chicago,3.0
+New York,Houghton,4.0
+Los Angeles,Chicago,5.0
+Los Angeles,Houghton,6.0
+Chicago,Houghton,1.0
+Houghton,Chicago,9.0
+Houghton,Los Angeles,16.0
+Houghton,New York,6.0
+Chicago,Los Angeles,7.0
+Chicago,New York,7.0
+Los Angeles,New York,2.0
+New York,New York,0.0
+Los Angeles,Los Angeles,0.0
+Chicago,Chicago,0.0
+Houghton,Houghton,0.0

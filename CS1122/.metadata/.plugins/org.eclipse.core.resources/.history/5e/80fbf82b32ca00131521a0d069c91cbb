@@ -1,0 +1,200 @@
+package evilHangman;
+
+import java.util.ArrayList;
+
+/**
+ * This class serves as nodes in the Trie structure
+ * 
+ * @author Spencer Rudnick
+ */
+public class TrieNode {
+	
+	// this node's parent and children nodes
+	private TrieNode parent;
+	private ArrayList<TrieNode> children;
+	
+	// the value of this node
+	private char value;
+	
+	// this node's end-of-word status
+	private boolean end;
+	
+	/**
+	 * Constructor for a TrieNode.
+	 * 
+	 * @param p - the new node's parent
+	 * 
+	 * @param v - the new node's value
+	 * 
+	 * @param e - the new node's end-of-word status
+	 */
+	public TrieNode(TrieNode p, char v, boolean e){
+		
+		// point parent to the passed node
+		parent = p;
+		
+		// set up the children list
+		children = new ArrayList<TrieNode>();
+		
+		// store the passed value and end-of-word status
+		value = v;
+		end = e;
+		
+	} // end of TrieNode constructor
+	
+	/**
+	 * This method adds a new node to this node's list of children.
+	 * 
+	 * @param v - the value of the new child
+	 * 
+	 * @param e - the end-of-word status of the new child
+	 * 
+	 * @return a pointer to the newly added child
+	 */
+	public TrieNode addChild(char v, boolean e){
+		
+		// sanity check
+		if (nodeForLetter(v) != null) return nodeForLetter(v);
+		
+		// make a new node
+		TrieNode newNode = new TrieNode(this, v, e);
+		
+		// insert newNode into children at the correct location
+		for (int i = 0; i < children.size(); i += 1){
+			if (children.get(i).value > v){
+				children.add(i, newNode);
+				return newNode;
+			}
+		}
+		
+		// add newNode to the end if that's where it belongs
+		children.add(newNode);
+		return newNode;
+		
+	} // end of addChild method
+
+	/**
+	 * This method removes the passed node from this node's list of children.
+	 * 
+	 * @param n - the node to be removed
+	 */
+	public void remove(TrieNode n){
+		children.remove(n);
+	} // end of remove method
+
+	/**
+	 * @return whether or not this node has any children
+	 */
+	public boolean hasChildren(){
+		return children.size() > 0;
+	} // end of hasChildren method
+
+	/**
+	 * This method gets the child at a passed index.
+	 * 
+	 * @param i - the index to look up
+	 * 
+	 * @return the child node at the passed index
+	 */
+	public TrieNode getChild(int i){
+		if (i >= 0 && i < children.size()) return children.get(i);
+		return null;
+	} // end of getChild method
+
+	/**
+	 * This method returns a pointer to the child node with the passed value.
+	 * 
+	 * @param c - the value to look for
+	 * 
+	 * @return a pointer to the child node with the passed value.
+	 */
+	public TrieNode nodeForLetter(char c){
+		for (TrieNode node : children) if (node.value == c) return node;
+		return null;
+	} // end of nodeForLetter method
+
+	/**
+	 * This method checks to see if a node has a next child.
+	 * 
+	 * @param i - the previously visited child's index
+	 * 
+	 * @return whether or not a next child exists
+	 */
+	public boolean hasNextChild(int i){
+		return i < children.size() - 1;
+	} // end of hasNextChild method
+
+	/**
+	 * @return this node's parent node
+	 */
+	public TrieNode parent(){
+		return parent;
+	} // end of parent method
+	
+	/**
+	 * @return whether or not this node is the root of the Trie
+	 */
+	public boolean isRoot(){
+		return value == '^';
+	} // end of isRoot method
+	
+	/**
+	 * @return whether or not this word is the end of a word
+	 */
+	public boolean isEndOfWord(){
+		return end;
+	} // end of isEndOfWord method
+	
+	/**
+	 * This method sets this node's end-of-word status to true.
+	 * Used when adding a word which is a prefix of a word already in the Trie.
+	 */
+	public void makeEnd(){
+		end = true;
+	} // end of makeEnd method
+	
+	/**
+	 * @return this node's value
+	 */
+	public char getValue(){
+		return value;
+	} // end of getValue method
+	
+	/**
+	 * This method sets this node's end-of-word status to false.
+	 * Used when a word is being removed from the Trie.
+	 */
+	public void makeNotEnd(){
+		end = false;
+	} // end of makeNotEnd method
+
+	/**
+	 * @return the word that this node is the end of, or an
+	 *         empty string if this node is not the end of a word
+	 */
+	public String getWord(){
+		
+		// sanity check
+		if (!isEndOfWord()) return "";
+		
+		// recursive call
+		return parent.getWordHelper() + value;
+		
+	} // end of getWord method
+	
+	/**
+	 * Recursively concatenates the characters on a branch to form a word.
+	 * 
+	 * @return the word formed by this branch
+	 */
+	private String getWordHelper(){
+		
+		// base case
+		if (isRoot()) return "";
+		
+		// recursive call
+		return parent.getWordHelper() + value;
+
+	} // end of getWordHelper method
+	
+} // end of TrieNode class

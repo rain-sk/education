@@ -1,0 +1,149 @@
+package evilHangman;
+
+import java.util.ArrayList;
+
+/**
+ * This class serves as nodes in the Trie structure
+ * 
+ * @author Spencer Rudnick
+ */
+public class TrieNode {
+	
+	// this node's parent and children nodes
+	private TrieNode parent;
+	private ArrayList<TrieNode> children;
+	
+	// the value of this node
+	private char value;
+	
+	// this node's end-of-word status
+	private boolean end;
+	
+	/**
+	 * Constructor for a TrieNode
+	 * @param p - the new node's parent
+	 * 
+	 * @param v - the new node's value
+	 * 
+	 * @param e - the new node's end-of-word status
+	 */
+	public TrieNode(TrieNode p, char v, boolean e){
+		
+		// point parent to the passed node
+		parent = p;
+		
+		// set up the children list
+		children = new ArrayList<TrieNode>();
+		
+		// store the passed value and end-of-word status
+		value = v;
+		end = e;
+		
+	} // end of TrieNode constructor
+	
+	/**
+	 * @return this node's parent node
+	 */
+	public TrieNode parent(){
+		return parent;
+	} // end of parent method
+	
+	/**
+	 * This method removes the passed node from this node's list of children.
+	 * 
+	 * @param n - the node to be removed
+	 */
+	public void remove(TrieNode n){
+		children.remove(n);
+	} // end of remove method
+	
+	/**
+	 * This method checks to see if a node has a next child.
+	 * 
+	 * @param i - the previously visited child's index
+	 * 
+	 * @return whether or not a next child exists
+	 */
+	public boolean hasNextChild(int i){
+		return i < children.size() - 1;
+	} // end of hasNextChild method
+	
+	/**
+	 * @return whether or not this node has any children
+	 */
+	public boolean hasChildren(){
+		return children.size() > 0;
+	} // end of hasChildren method
+
+	/**
+	 * This method adds a new node to this node's list of children.
+	 * 
+	 * @param v - the value of the new child
+	 * 
+	 * @param e - the end-of-word status of the new child
+	 * 
+	 * @return a pointer to the newly added child
+	 */
+	public TrieNode addChild(char v, boolean e){
+		
+		// sanity check
+		if (nodeForLetter(v) != null) return nodeForLetter(v);
+		
+		// make a new node
+		TrieNode newNode = new TrieNode(this, v, e);
+		
+		// insert newNode into children at the correct location
+		for (int i = 0; i < children.size(); i += 1){
+			if (children.get(i).value > v){
+				children.add(i, newNode);
+				return newNode;
+			}
+		}
+		children.add(newNode);
+		return newNode;
+		
+	}
+
+	public TrieNode getChild(int i){
+		if (i >= 0 && i < children.size()) return children.get(i);
+		return null;
+	}
+
+	public TrieNode nodeForLetter(char c) {
+		for (TrieNode node : children) if (node.value == c) return node;
+		return null;
+	}
+	
+	public boolean isRoot(){
+		return value == '^';
+	}
+	
+	public boolean isEndOfWord() {
+		return end;
+	}
+	
+	public void makeEnd(){
+		end = true;
+	}
+	
+	public void makeNotEnd(){
+		end = false;
+	}
+	
+	public char getValue(){
+		return value;
+	}
+	
+	public String getWord(){
+		if (!isEndOfWord()) return "";
+		
+		return parent.getWordHelper() + value;
+	}
+	
+	private String getWordHelper(){
+		if (isRoot()) return "";
+		
+		return parent.getWordHelper() + value;
+	}
+	
+}

@@ -1,0 +1,357 @@
+---
+title: "Movielens Analysis"
+author: "Michael Paquette, Nobuki Harata, Spencer Rudnick"
+date: "2/6/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("functions.R")
+```
+
+## Obtaining the data
+
+The dataset we used came from the University of Minnesota’s [MovieLens 1M Dataset](https://grouplens.org/datasets/movielens/1m/), provided by [GroupLens](https://grouplens.org/about/what-is-grouplens/).
+
+The dataset came in the form of three .dat files: movies.dat, users.dat, and ratings.dat. You may download the files [here](http://files.grouplens.org/datasets/movielens/ml-1m.zip). We used a text-editor to convert the .dat files to .csv files. To do this we replaced pairs of colons (::) with commas (,), and added headers to each file. Finally we were able to import the .csv files into R and export them to .Rda files with the following code:
+
+```{r}
+# read in csv files
+library(readr)
+usersList <- read_csv("csv/users.csv")
+moviesList <- read_csv("csv/movies.csv")
+ratingsList <- read_csv("csv/ratings.csv")
+
+# convert lists into data.frames
+users <- data.frame(usersList)
+movies <- data.frame(moviesList)
+ratings <- data.frame(ratingsList)
+rm(usersList, moviesList, ratingsList)
+
+# export data.frames to .Rda files
+save(users,file = "Rda/users.Rda")
+save(movies,file = "Rda/movies.Rda")
+save(ratings,file = "Rda/ratings.Rda")
+
+```
+
+## Cleaning the data
+
+Upon first look, the data is very clean. But we can do better!
+
+Let's begin by converting the occupation indicator variables in the users table to string values:
+
+```{r}
+occupations <- c("other","academic/educator","artist","clerical/admin",
+                 "college/grad student","customer service","doctor/health care",
+                 "executive/managerial","farmer","homemaker","K-12 student",
+                 "lawyer","programmer","retired","sales/marketing","scientist",
+                 "self-employed","technician/engineer","tradesman/craftsman",
+                 "unemployed","writer")
+users$Occupation <- occupations[users$Occupation + 1]
+rm(occupations)
+```
+
+Now the occupation column is much more descriptive.
+
+```{r echo=FALSE}
+users[3,]
+```
+
+Next we'll focus on cleaning up the movies table. Looking at the Title column, we see that the creators of this dataset included a movie's release year in the title. Since we would like to look at how ratings differ over time, let's move the year into its own column and remove it from the Title column.
+
+```{r}
+library(stringr)
+# extract years from movies$Title into their own column
+movies$Year <- sapply(movies$Title, function(title) {
+  stop <- nchar(title)
+  start <- stop - 6
+  str_replace(str_replace(str_replace(substr(title,start=start,stop=stop), '\\)', ''), '\\(', ''), ' ', '')
+})
+
+# remove years from Titles
+movies$Title <- sapply(movies$Title, function(title) {
+  substr(title, start = 1, stop = (nchar(title) - 6))
+})
+```
+
+If you take a close look at the Genres column, you'll notice that genres are stored as strings broken up by the '|' character. To convert these lists into a more usable format, run the following code:
+
+```{r}
+library(stringr)
+# extract genres into a vector
+movies$Genres <- sapply(movies$Genres, function(genreString) {
+  return(strsplit(genreString, split = "|", fixed = TRUE))
+})
+```
+
+We need to add a RatingsCount column to the movies table. RatingsCount will indicate how many ratings each movie has received.
+
+```{r}
+movies$RatingsCount <- sapply(movies$MovieID, function(movie_id) {
+  return(nrow(ratings[ratings$MovieID == movie_id,]))
+})
+```
+
+We also need to be add an AvgRating column to the movies table. AvgRating will be an arithmetic mean of all ratings about each movie.
+
+```{r}
+movies$AvgRating <- sapply(movies$MovieID, function(movie_id) {
+  return(mean(ratings$Rating[ratings$MovieID == movie_id], na.rm = TRUE))
+})
+```
+
+If we open the movies table and order them by RatingsCount, we see that a bunch of movies in our dataset have 0 ratings! Not to mention, most of the movies with AvgRatings >= 4.5 have very few ratings. To deal with this, we'll remove the bottom 25th percentile of movies based on RatingsCount.
+
+```{r}
+twentyFifth <- sort(movies$RatingsCount)[nrow(movies) / 4]
+movies <- movies[movies$RatingsCount > twentyFifth,]
+rm(twentyFifth)
+```
+
+## Consolidating ratings into users
+
+To more easily relate movie ratings to the demographic data of the users who made them, we will tuck the ratings table inside the users table. Each user will then be directly associated with the ratings they made.
+
+```{r}
+users$Ratings <- sapply(users$UserID, function(userID) {
+  # we use complex numbers to store pairs of MovieIDs and Ratings
+  complex(real = ratings$MovieID[ratings$UserID == userID],
+          imaginary = ratings$Rating[ratings$UserID == userID])
+})
+```
+
+But wait, we've included ratings about movies that no longer exist in the dataset! To remove them we run:
+
+```{r}
+users$Ratings <- sapply(users$Ratings, function(ratings) {
+  valid <- Re(ratings) %in% movies$MovieID
+  return(ratings[valid])
+})
+```
+
+Look at that! We now have some nice clean data to analyze :)
+
+## Scoring Movies
+
+To get a better sense of a movie's quality, we felt the need to compute a composite score for each movie. We computed composite scores and added a Score column to our movies table with the following code:
+
+```{r}
+# convert RatingsCount into a multiplier, giving extra weight to movies rated the most often
+twentyFifth <- order(movies$RatingsCount,decreasing = TRUE)[length(movies) / 4]
+ratingsMultiplier <- log(movies$RatingsCount, base = twentyFifth)
+
+# adjust the rating to be from 0-4
+adjustedRating <- movies$AvgRating - 1
+
+# compute and store each movie's score
+movies$Score <- ratingsMultiplier * adjustedRating
+rm(twentyFifth,ratingsMultiplier,adjustedRating)
+```
+
+## Genre Indicator Variables
+
+We also would like to add genre indicator variables to the movies table. These will allow us to programatically access movies based on selected genres.
+
+```{r}
+addGenreIndicators()
+```
+
+## Ratings by Males and Females
+
+Next we would like to consolidate information about ratings made by each sex into two new tables. We've created two functions (located in functions.R) which return maleRatings and femaleRatings tables which we can use to analyze genre preferences by sex.
+
+```{r}
+maleRatings <- createMaleRatings()
+femaleRatings <- createFemaleRatings()
+```
+
+Let's consolidate those into one table, which we'll call genderedGenrePrefs.
+
+```{r}
+genderedGenrePrefs <- createGenderedGenrePrefs()
+```
+
+## Connections between genres
+
+We'll also create a table called genreConnectivity. This will allow us to explore the relationships between genres.
+
+```{r}
+genreConnections <- genreConnectivity()
+```
+
+## Exporting the data
+
+```{r}
+save(users,file = "Rda/users.Rda")
+save(movies,file = "Rda/movies.Rda")
+save(ratings,file = "Rda/ratings.Rda")
+save(genderedGenrePrefs,file = "Rda/genderedGenrePrefs.Rda")
+save(genreConnections,file = "Rda/genreConnections.Rda")
+```
+
+Now we're all set to begin visualizing the data!
+
+# Preliminary Questions
+
+After processing the data into the formats we needed, we began to ask ourselves some questions about the data.
+
+## Which age group tends to rate movies the highest/lowest?
+```{r}
+users$AvgRating <- sapply(users$Ratings, function(ratings) {
+  sum <- 0
+  mean(sapply(unlist(ratings), function(rating) {
+    sum <- sum + Im(rating)
+  }))
+})
+
+# plot
+boxplot(users$AvgRating~users$Age)
+
+```
+
+There seemed to be an upward trend in median rating as age rose, however this wasn't a relationship we necessarily wanted to explore. We decided to turn our attention to the Sex variable. We began by plotting average ratings by sex.
+
+## Average Ratings by Sex
+
+```{r}
+users$AvgRating <- sapply(users$Ratings, function(ratings) {
+  sum <- 0
+  mean(sapply(unlist(ratings), function(rating) {
+    sum <- sum + Im(rating)
+  }))
+})
+
+boxplot(users$AvgRating~users$Sex)
+```
+
+While males appeared to have more outliers on the lower end, there again doesn't seem to be much of a difference here.
+
+## What is the average movie rating based on the year it came out?
+We plotted Scores by Year of Release:
+```{r}
+library(ggplot2)
+# plot Score over time
+ggplot(movies, aes(Year,Score)) +
+  geom_jitter(alpha = .2,size = 1) +
+  ggtitle("Movie score based on release year") +
+  labs(caption = "This plot shows a general upward trend in composite score through the beginning of the 1960s, followed by a dip ") +
+  scale_y_continuous("Composite Score") +
+  scale_x_discrete("Release Year",breaks = c(1920,1930,1940,1950,1960,1970,1980,1990,2000))
+```
+
+This chart demonstrates an upward trend in score through the end of the 1950s, followed by a downward trend resulting from a large cluster of lowly-scoring movies in the 1990s.
+
+## User Age Groups
+
+Next we wanted to explore the age-groups in our dataset.
+
+### All Users
+```{r}
+pie(table(users$Age), main="User Ages")
+```
+
+### Male Users
+```{r}
+pie(table(users$Age[users$Sex == "M"]), main="Male User Ages")
+```
+
+### Female Users
+```{r}
+pie(table(users$Age[users$Sex == "F"]), main="Female User Ages")
+```
+
+It appears that there isn't much of a difference in age distribution between the sexes. Under 18 is the smallest group, while most users are between 18 and 44.
+
+## Gendered Genre Preferences
+
+Next we want to explore relative preferences between males and females. We subtract avgFemaleRating from avgMaleRating for each genre and plot the difference on a histogram:
+
+```{r cars}
+library(plyr)
+library(ggplot2)
+library(scales)
+
+ggplot(genderedGenrePrefs, aes(x = reorder(genre, diff), y = diff, fill = diff)) +
+  geom_bar(stat = "identity")+
+  scale_fill_gradient2(low = muted("red"), mid = "white", high = muted("blue")) +
+  labs(x= "Genre", y= "Difference in average rating", title = "GenreRating Differential Based on Sex")+
+  theme_dark()+
+  theme(text = element_text(size=20), axis.text.x = element_text(angle=55, hjust=1))
+```
+
+The genres most preferred by females include Children's, Musical, Romance, and Fantasy. Males most prefer Western, Film-Noir, Crime, Sci-Fi, and Horror. Females prefer genres geared toward children and which aim to entertain! Males prefer genres which mainly showcase violence.
+
+# Genre Average Scores
+
+This chart illustrates average scores for each genre.
+
+```{r}
+library(plyr)
+library(ggplot2)
+library(scales)
+
+ggplot(genderedGenrePrefs, aes(x = reorder(genre, avgScore), y = avgScore, fill = avgScore)) +
+  geom_bar(stat = "identity")+
+  scale_fill_gradient2(low = muted("red"), mid = "white", high = muted("blue")) +
+  labs(x= "Genre", y= "Average Score of Genres", title = "Genre Average Score")+
+  theme_dark()+
+  theme(text = element_text(size=20), axis.text.x = element_text(angle=55, hjust=1))
+```
+
+# Exporting Genre Connections to Json
+
+Exports all connections to genres.json. To create the [genre connectedness graph](http://therudnick.com/movies/genres) we manually removed weak ties from the json file. 
+
+```{r}
+
+load("Rda/genreConnections.Rda")
+load("Rda/genderedGenrePrefs.Rda")
+
+genre <- c("Action","Adventure","Animation","Childrens","Comedy","Crime",
+           "Documentary","Drama","Fantasy","Film-Noir","Horror","Musical",
+           "Mystery","Romance","Sci-Fi","Thriller","War","Western")
+
+getConnection <- function(row, col) {
+  return(genreConnections[[col]][row])
+}
+getGenre <- function(i) {
+  return(genre[i])
+}
+createEdge <- function(row,col) {
+  pre <- ""
+  if(row > 1 && col > 2) {
+    return(paste0(",{'source':'",getGenre(row),"','target':'",getGenre(col),"','id':'",getConnection(row,col),"-",getGenre(row),"-",getGenre(col),"'}"))
+  } else {
+    return(paste0("{'source':'",getGenre(row),"','target':'",getGenre(col),"','id':'",getConnection(row,col),"-",getGenre(row),"-",getGenre(col),"'}"))
+  }
+}
+createNode <- function(n,x,y) {
+  return(paste0("{'label':'",getGenre(n),"','x':",x,"','y':",y,",'id':'",getGenre(n),"','size':5}"))
+}
+
+exportJson <- function() {
+  out <- "{'nodes':["
+  nodes <- sapply(1:18, function(n) {
+    node <- ""
+    if(n>1) {
+      node <- paste0(node,",")
+    }
+    node <- paste0(node,createNode(n,n*1.5,n*2.5))
+    return(node)
+  })
+  out <- paste(out,paste(x,collapse = ""),"],'edges':[")
+  edges <- paste(sapply(1:17, function(r,out) {
+    paste(sapply((r+1):18, function(c,out) {
+      createEdge(r,c)
+    }), collapse = "")
+  }), collapse = "")
+  out <- paste0(out,edges,"]}")
+  write(out, file = "genres.json")
+}
+```
+
+The Genre Connectedness Graph can be seen below:
+
+<iframe src="http://therudnick.com/movies/genres/" style="border:0px #ffffff none;" name="myiFrame" scrolling="no" frameborder="1" marginheight="0px" marginwidth="0px" height="600px" width="100%" allowfullscreen></iframe>

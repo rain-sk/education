@@ -1,0 +1,113 @@
+---
+title: "Exploring the Run Time for All Male Runners"
+author: "Spencer Rudnick & Nicholas Melon"
+date: "January 19, 2017"
+output: html_document
+---
+
+Today we are working through Section 2.4 of the [race results chapter](http://moodle.cornellcollege.edu/pluginfile.php/101067/mod_resource/content/1/Runners.pdf).
+
+#### Exercise 1
+Recreate Figure 2.6:  Default Scatter Plot for Run Time vs. Age for Male Runners.  Note that you will want to start by loading the data frame that we saved at the end of Section 2.3.  That line of code is provided.  Add your code for plotting the data.  
+```{r}
+setwd("~/Workspace/CSC 255/cherryLab")
+load("cbMen.rda")
+plot(cbMen$runTime~cbMen$ag, xlab = "Age (years)", ylab = "Run Time (minutes)")
+```
+
+#### Exercise 2
+Recreate Figure 2.7:  Revised Scatter Plot of Male Runners.  
+```{r}
+library(RColorBrewer)
+Purples8 = brewer.pal(9, "Purples")[8]
+Purples8A = paste(Purples8, "14", sep = "")
+plot(cbMen$runTime~jitter(cbMen$ag, amount = 0.5), xlab = "Age (years)", ylab = "Run Time (minutes)", col=Purples8A, pch=1, cex=0.1)
+```
+
+#### Exercise 3
+Recreate Figure 2.8:  Smoothed Scatter Plot of Male Runners Race Times vs Age.  
+```{r}
+smoothScatter(y = cbMen$runTime, x = cbMen$age,
+              ylim = c(40, 165), xlim = c(15, 85),
+              xlab = "Age (years)", ylab = "Run Time (minutes)")
+```
+
+#### Exercise 4
+Recreate Figure 2.9:  Side-by-Side Boxplots of Male Runners' Race Time vs. Age.  
+```{r}
+cbMenSub = cbMen[cbMen$runTime > 30 & !is.na(cbMen$age) & cbMen$age > 15, ]
+ageCat <- cut(cbMenSub$age, breaks = c(seq(15, 75, 10), 90))
+plot(cbMenSub$runTime ~ ageCat, xlab = "Age (years)", ylab = "Run Time (minutes)")
+```
+
+#### Exercise 5
+Recreate Figure 2.10:  Residual Plot From Fitting a Simple Linear Model of Performance to Age.  Note:  The loess() that you will use here is computationally expensive.  Enjoy a little [comic relief](http://xkcd.com/303/) while you wait for it to terminate.
+```{r}
+lmAge <- lm(runTime ~ age, data = cbMenSub)
+smoothScatter(x = cbMenSub$age, y = lmAge$residuals, xlab = "Age (years)", ylab = "Residuals")
+abline(h = 0, col = "purple", lwd = 2)
+resid.lo <- loess(resids ~ age, data = data.frame(resids = residuals(lmAge), age = cbMenSub$age))
+age20to80 <- 20:80
+resid.lo.pr <- predict(resid.lo, newdata = data.frame(age = age20to80))
+lines(x = age20to80, y = resid.lo.pr, col = "green", lwd = 2)
+```
+
+#### Exercise 6
+Recreate Figure 2.11:  Piecewise Linear and Loess Curves Fitted to Time vs. Age.  Note:  The loess() that you will use here is computationally expensive.  Enjoy a little [comic relief](http://xkcd.com/303/) while you wait for it to terminate.
+```{r}
+
+decades <- seq(30, 60, by = 10)
+overAge <- lapply(decades,  function(x) pmax(0, (cbMenSub$age - x)))
+names(overAge) <- paste("over", decades, sep = "")
+overAge <- as.data.frame(overAge)
+lmPiecewise <- lm(runTime ~ . , data = cbind(cbMenSub[, c("runTime", "age")], overAge))
+overAge20 = lapply(decades, function(x) pmax(0, (age20to80 - x)))
+names(overAge20) = paste("over", decades, sep = "")
+overAgeDF = cbind(age = data.frame(age = age20to80), overAge20)
+predPiecewise = predict(lmPiecewise, overAgeDF)
+plot(predPiecewise ~ age20to80, type = "l", col = "purple", lwd = 2, xlab = "Age (years)", ylab = "Run Time Prediction")
+menRes.lo = loess(runTime ~ age, cbMenSub)
+menRes.lo.pr <- predict(menRes.lo, data.frame(age = age20to80))
+lines(x = age20to80, y = menRes.lo.pr, col = "green", lwd = 2)
+legend("topleft", col = c("purple", "green"), lty = 1, legend = c("Piecewise Linear", "Loess Curve"), bty = "n")
+```
+
+#### Exercise 7
+Recreate Figure 2.13:  Density Curves for the Age of Male Runners in 1999 and 2012.
+```{r}
+age1999 = cbMenSub[ cbMenSub$year == 1999, "age" ]
+age2012 = cbMenSub[ cbMenSub$year == 2012, "age" ]
+plot(density(age1999, na.rm = TRUE),
+ylim = c(0, 0.05), col = "purple",
+lwd = 3, xlab = "Age (years)", main = "")
+lines(density(age2012, na.rm = TRUE), lwd = 3, col="green")
+legend("topleft", col = c("purple", "green"), lty= 1,
+legend = c("1999", "2012"), bty = "n")
+```
+
+#### Exercise 8
+Recreate Figure 2.14:  Loess Curves Fit to Performance for 1999 and 2012 Male Runners.
+```{r}
+mR.lo99 = loess(runTime ~ age, cbMenSub[ cbMenSub$year == 1999,])
+mR.lo.pr99 = predict(mR.lo99, data.frame(age = age20to80))
+mR.lo12 = loess(runTime ~ age, cbMenSub[ cbMenSub$year == 2012,])
+mR.lo.pr12 = predict(mR.lo12, data.frame(age = age20to80))
+plot(mR.lo.pr99 ~ age20to80,
+type = "l", col = "purple", lwd = 3,
+xlab = "Age (years)", ylab = "Prediction (minutes)")
+lines(x = age20to80, y = mR.lo.pr12, col = "green", lwd = 3)
+legend("topleft", col = c("purple", "green"), lty = 1,
+legend = c("1999", "2012"), bty = "n")
+```
+
+#### Exercise 9
+You made several scatterplots comparing the age and run time for the participants as part of this section.  Discuss why the two revised scatterplots are better for drawing conclusions than the initial scatterplot that you made.
+
+The two revised scatterplots that we created were better for drawing conclusions than the initial because they were much easier to read. Altering the datapoints to appear transparent allowed the location of high density to be differentiated from low density areas.
+
+#### Exercise 10
+Describe what you learned about the relationships between age and run time from the smoothed scatterplot.  What would you tell a runner, who was interested in entering the race, about his potential competitors?
+
+I learned that the average time of runners appears to be about the same for all ages only slightly increasing as age approaches 55. Although the large majority of runners that finish significanly faster than the average are between 20 and 35.
+
+I would tell a potential runner that a large majority of his competetors will finish the race between 60 and 120 minutes while some competeitos finish as fast as about 45 minutes and others as slow as 160 minutes. Have fun out there kid!

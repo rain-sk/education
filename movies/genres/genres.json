@@ -1,0 +1,83 @@
+{
+	"nodes":[
+		{"label":"Drama","x": 1,"y":0,"id":"Drama","size":69.48897},
+		{"label":"Action","x": 0.9409976553623765,"y":0.3384130798336704,"id":"Action","size":61.11467},
+		{"label":"Thriller","x": 0.7709531747949796,"y":0.6368918293348892,"id":"Thriller","size":60.21023},
+		{"label":"Comedy","x": 0.5099326043901358,"y":0.8602143564135007,"id":"Comedy","size":68.36259},
+		{"label":"Childrens","x": 0.1887375954529167,"y":0.9820275556534304,"id":"Childrens","size":53.93628},
+		{"label":"Musical","x": -0.15472933479028134,"y":0.9879568983287464,"id":"Musical","size":46.15121},
+		{"label":"Adventure","x": -0.47993747795978653,"y":0.8773026941994418,"id":"Adventure","size":55.17453},
+		{"label":"Crime","x": -0.7485107481711012,"y":0.6631226582407952,"id":"Crime","size":50.62595},
+		{"label":"Romance","x": -0.9287562401253023,"y":0.37069103904506756,"id":"Romance","size":58.97154},
+		{"label":"Sci-Fi","x": -0.9994041405510704,"y":0.03451613896970828,"id":"SciFi","size":55.01258},
+		{"label":"Western","x": -0.9521176659107141,"y":-0.30573182735975307,"id":"Western","size":39.51244},
+		{"label":"Animation","x": -0.7924768419510907,"y":-0.6099020044000725,"id":"Animation","size":45.53877},
+		{"label":"Documentary","x": -0.5393200344991989,"y":-0.8421008849228119,"id":"Documentary","size":39.31826},
+		{"label":"Fantasy","x": -0.2225209339563137,"y":-0.9749279121818237,"id":"Fantasy","size":41.58883},
+		{"label":"Film-Noir","x": 0.1205366802553232,"y":-0.992708874098054,"id":"FilmNoir","size":34.65736},
+		{"label":"Horror","x": 0.44937040096716097,"y":-0.8933455337855633,"id":"Horror","size":55.49076},
+		{"label":"Mystery","x": 0.7251763071433764,"y":-0.6885632313432771,"id":"Mystery","size":45.21789},
+		{"label":"War","x": 0.9154080085253664,"y":-0.4025272387399673,"id":"War","size":48.12184}
+	],
+	"edges":[
+		{"source":"Action","target":"Adventure","id":1},
+		{"source":"Action","target":"SciFi","id":2},
+		{"source":"Action","target":"Thriller","id":3},
+		{"source":"Action","target":"Drama","id":4},
+
+		{"source":"Adventure","target":"Action","id":5},
+		{"source":"Adventure","target":"Childrens","id":6},
+
+		{"source":"Animation","target":"Childrens","id":7},
+		{"source":"Animation","target":"Musical","id":8},
+
+		{"source":"Childrens","target":"Comedy","id":9},
+		{"source":"Childrens","target":"Animation","id":10},
+
+		{"source":"Comedy","target":"Childrens","id":11},
+		{"source":"Comedy","target":"Drama","id":12},
+		{"source":"Comedy","target":"Romance","id":13},
+
+		{"source":"Crime","target":"Action","id":14},
+		{"source":"Crime","target":"Drama","id":15},
+
+		{"source":"Documentary","target":"Comedy","id":16},
+		{"source":"Documentary","target":"Musical","id":17},
+
+		{"source":"Drama","target":"Action","id":18},
+		{"source":"Drama","target":"Comedy","id":19},
+		{"source":"Drama","target":"Romance","id":20},
+		{"source":"Drama","target":"Thriller","id":21},
+
+		{"source":"Fantasy","target":"Adventure","id":22},
+		{"source":"Fantasy","target":"Childrens","id":23},
+
+		{"source":"FilmNoir","target":"Crime","id":24},
+		{"source":"FilmNoir","target":"Thriller","id":25},
+
+		{"source":"Horror","target":"SciFi","id":26},
+		{"source":"Horror","target":"Thriller","id":27},
+
+		{"source":"Musical","target":"Romance","id":28},
+		{"source":"Musical","target":"Drama","id":29},
+
+		{"source":"Mystery","target":"Drama","id":30},
+		{"source":"Mystery","target":"Thriller","id":31},
+
+		{"source":"Romance","target":"Comedy","id":32},
+		{"source":"Romance","target":"Drama","id":33},
+
+		{"source":"SciFi","target":"Thriller","id":34},
+		{"source":"SciFi","target":"Horror","id":35},
+
+		{"source":"Thriller","target":"Drama","id":36},
+		{"source":"Thriller","target":"SciFi","id":37},
+
+		{"source":"War","target":"Drama","id":38},
+		{"source":"War","target":"Action","id":39},
+
+		{"source":"Western","target":"Comedy","id":40},
+		{"source":"Western","target":"Drama","id":41},
+		{"source":"Western","target":"Action","id":42}
+	]
+}

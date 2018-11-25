@@ -1,0 +1,538 @@
+
+\chapter{Spencer Rudnick}
+
+\begin{enumerate}
+  \item Most programming languages require the use of brackets to
+    enclose the index in a reference to an element of an array.
+  \begin{enumerate}
+    \item Identify a language the requires the use of parentheses
+      to enclose the index in a reference to an element of an array.
+    \item Why did the designers of the language choose parentheses
+      rather than brackets?
+    \end{enumerate}
+
+  \begin{answer}
+
+  \begin{enumerate}
+    \item Ada is an example of a programming language that uses
+      parentheses to enclose indices to reference elements of arrays.
+    \item The designers of Ada chose to use parentheses for enclosing
+      indices, in spite of the fact that it makes code more difficult
+      to read, because both array references and function calls map to
+      an address in memory. An understanding of how a program runs on
+      the hardware of computer reveals that this seemingly strange
+      choice actually makes a lot of sense.
+    \end{enumerate}
+
+    \end{answer}
+    
+  \item What is the relationship between a lexeme and a token?
+
+  \begin{answer}
+
+    A token describes a category of lexemes. For example, all variable
+    names, \textit{i, index, currentNode, etc.}, are \textit{lexemes}
+    within the token \textit{Identifiers}. \"=\" has its own token,
+    \textit{equal\_sign}. And so on, all down the line of reserved
+    words, characters, and user-defined variables.
+
+    \end{answer}
+
+  \item
+  \begin{enumerate}
+    \item What kind of symbols are found at the internal nodes of a
+      parse tree?
+    \item What kind of symbols are found at the leaves of a parse tree?
+    \end{enumerate}
+
+  \begin{answer}
+
+  \begin{enumerate}
+    \item Nonterminal symbols are found at the internal nodes of a
+      parse tree. Nonterminals include \textit{if()} statements and
+      other function calls.
+    \item Terminal symbols are found at the leaves of a parse
+      tree. Terminals include lexemes and tokens, such as integer
+      literals and variable names.
+    \end{enumerate}
+
+    \end{answer}
+
+
+  \item One of the most significant contributions from the developers
+    of ALGOL 60 also limited the success of that language. What was
+    that contribution?
+
+  \begin{answer}
+
+    ALGOL 60 was the first language to be defined using what is now
+    known as Backus-Naur Form, or BNF for short. BNF was a very
+    significant contribution to the field of computer
+    science. However, it did not catch on very quickly at the time of
+    ALGOL 60's release, so few people adopted the language.
+
+    \end{answer}
+
+  \item What problem were the creators of Common LISP trying to solve?
+
+  \begin{answer}
+
+    The creators of Common LISP were trying to solve the problem of
+    fragmentation in the LISP family, which made code portability very
+    difficult. Common LISP combined elements of many other versions of
+    LISP, creating a language which was portable, yet very complex.
+
+    \end{answer}
+
+  \item What is an ambiguous context free grammar?
+
+  \begin{answer}
+
+    A grammar for which sentences can have more than one valid parse tree.
+
+    \end{answer}
+
+  \item Contrast the complexity of algorithms that can parse strings
+    that conform to the most general kinds of context free grammars
+    and the complexity of the algorithms that can parse strings that
+    conform to the grammars of programming languages?
+
+  \begin{answer}
+
+    Algorithms which parse strings conforming to general kinds of
+    context free grammars function on $O(n)$.
+
+    Algorithms which parse strings conforming to the grammars of a
+    modern programming language usually function on the order of
+    $O(n^3)$.
+
+    \end{answer}
+
+  \item Java represents characters with Unicode. It is the first
+    widely used programming language with this feature. What is the
+    significance of this feature?
+
+  \begin{answer}
+
+    Unicode represents characters from almost every natural language
+    and number system. This allows information encoded in Unicode to
+    be read on almost any machine (especially those running Java).
+
+    \end{answer}
+
+  \item How does the binary coded decimal type differ from the
+    floating point type?
+
+  \begin{answer}
+
+    Decimals are precise definitions of a value, though they are
+    usually only allowed to be in a range specified by the language
+    and hardware. They contain a fixed decimal point with exact
+    numbers defined on both sides.
+
+    Floating points are approximations of a value. They are not
+    precise, but they are able to represent a vastly greater span of
+    values. Floating points are made up of a sign bit, an exponent
+    byte (or two), and between three and eight bytes defining a
+    fraction.
+
+    \end{answer}
+
+  \item Identify a user-defined ordinal type in the Java programming
+    language.
+
+  \begin{answer}
+
+    \textit{integer} is a user-defined ordinal type in Java.
+
+    \end{answer}
+
+  \item Mathematicians and programmers might have different ideas
+    about the precedence of Boolean operators. Explain.
+
+  \begin{answer}
+
+    In boolean algebra, the AND and OR operators have the same
+    precedence. However, C-based languages assign a higher precedence
+    to AND than OR, likely because of an erroneous associations
+    between arithmetic multiplication with the AND function, and
+    arithmetic addition with the OR function.
+
+    \end{answer}
+
+  \item Programmers should use \verb+===+ rather than \verb+==+ to
+    test the equality of the values of two expressions in JavaScript. Why?
+
+  \begin{answer}
+
+    In JavaScript, \verb+"=="+ allows the operands to be coerced (one
+    is converted into the same type as the other for easy
+    comparison). \verb+"7" == 7+ would return true. \verb+"==="+
+    prevents coercion by the interpreter, so \verb+"7" === 7+ would
+    return false.
+
+    \end{answer}
+
+  \item Describe a hazard of allowing short-circuited evaluation
+    of expressions and side effects in expressions at the same time.
+
+  \begin{answer}
+
+    There is a possibility that the whole expression may not be
+    parsed, and so the side effect which was intended to happen is
+    skipped. This could result in small errors in which an integer
+    which was supposed to be incremented is not! (gasp!)
+
+    \end{answer}
+
+  \item Briefly describe the three steps in the mark-sweep algorithm
+    for garbage collection.
+
+  \begin{answer}
+
+    Step 1. All cells in the heap are marked as garbage.
+
+    Step 2. Each cell is checked to see if it is reachable. If it is,
+    it is marked as still in use (not garbage).
+
+    Step 3. All cells still marked as garbage are destroyed (removed
+    from the heap).
+
+    \end{answer}
+
+  \item What led Yukihiro Matsumoto to create the Ruby programming language?
+
+  \begin{answer}
+
+    Yukihiro Matsumoto created Ruby out of dissatisfaction with Perl
+    and Python, specifically that they were not pure object-oriented
+    languages.
+
+    \end{answer}
+
+  \item What did Microsoft aim to achieve with its development of the
+    C\# language?
+
+  \begin{answer}
+
+    The purpose of C\# was to create a language which can combine
+    components in any other language within the .NET framework (C\#,
+    Visual Basic, .Net, Managed C++, F\#, and JScript .Net). Seems
+    like they were trying to incorporate some of the Unix philosophy
+    we learned about on the first day!
+
+    \end{answer}
+
+  \end{enumerate}
+
+
+
+\section{More questions for discussion and review.}
+
+\begin{enumerate}
+  \item The design of which machine influenced the design
+    of the control statements in FORTRAN?
+
+  \begin{answer}
+
+    The IBM 704 system.
+
+  \end{answer}
+
+  \item How many different kinds of control statements
+    must the designer of a programming language include
+    in a language?
+
+  \begin{answer}
+
+    While it is possible to use only one (GOTO), the minimum number of control statements in a language which does not use GOTO is two. One for choosing between control flow paths, and one for logically controlled iterations.
+
+  \end{answer}
+
+  \item What is the one question that applies in the
+    design of all statements that allow selection or
+    iteration?
+
+  \begin{answer}
+
+  	Should the control structure have multiple entries?
+
+  \end{answer}
+
+  \item What is an advantage of requiring that
+    the \textbf{then} and \textbf{else} clauses of
+    an \textbf{if} statement be compound statements?
+
+  \begin{answer}
+
+  	Requiring compound statements helps increase the readability and writability for programmers when using nested selector statements, that otherwise can get very messy and complicated.
+
+  \end{answer}
+
+  \item How does the \textbf{switch} statement in C\#
+    differ from the \textbf{switch} statement in Java?
+
+  \begin{answer}
+
+  	In Java, the switch statement does not allow case expressions anywhere except the top level in the body of the switch.  C\#  allows the execution of more than one segment. In C\#, the control expressions as well as case statements can be strings.
+
+  \end{answer}
+
+  \item Distinguish between 2 statements in Ruby
+    that correspond to Java's \textbf{switch} statement.
+
+  \begin{answer}
+
+  	Case expressions are the Ruby equivalent of Java's \textbf{switch} statement. One is semantically similar to nested if statements with case - when - then. The other is with boolean expressions being evaluated one at a time from top to bottom. The value of this case expression is equivalent to the value of the \textbf{then} statement corresponding to the first \textit{true} \textbf{when} statement.
+
+  \end{answer}
+
+  \item Features of a programming language sometimes persist
+    longer than a feature of computing hardware that inspired
+    and supported that part of the language's design.
+    Similarly, features of hardware sometimes persist longer
+    than some parts of a language's design that were created
+    to take advantage of that feature in hardware.
+
+    Give examples.
+
+  \begin{answer}
+
+    The IBM 704 influenced the design of control statements which are still used today, and prompted the development of Fortran.
+    The \textbf{register} keyword in C is a hint to the compiler that a variable will be used repeatedly, and so it should be stored in the CPU rather than in memory. However, modern compilers are far better at optimization than programmers, so this keyword is outdated and unnecessary.
+    The Algol standard used several different syntaxes which, among other things, allowed Europeans to use a comma to denote a decimal point, while Americans could continue to use a period.
+
+  \end{answer}
+
+  \item Who most famously warned of the dangers of using the
+    \textbf{goto} statement? What did Donald Knuth have to
+    say about the use of the \textbf{goto} statement?
+
+  \begin{answer}
+
+    Edsger Dijkstra noted “The goto statement as it stands is just too primitive; it is too much an invitation to make a mess of one’s program.” Donald Knuth argued there were occasions when the efficiency of the goto outweighed its harm to readability.
+
+  \end{answer}
+
+  \item Describes Ada's \textbf{for} loop. Are there some
+    kinds of iteration that might be easier in Ada than
+    in Java? Easier in Java than in Ada?
+
+  \begin{answer}
+
+  	The for loop looks like this
+    for variable in [reverse] discrete\_range loop … end loop;
+    Ada’s for loop can use any ordinal type variable for its counter. Arrays with ordinal type subscripts can be conveniently processed.
+
+  \end{answer}
+
+  \item What does it mean to say that the guarded commands
+    of Ada are non-deterministic?
+
+  \begin{answer}
+
+  	Guarded commands in Ada are nondeterministically chosen for execution when more than one of the statements are evaluated to true. This means that if there are three guarded statements and two of the three evaluate to true, then each time the program will use one of the two statements. It will not always use the one that appears first nor the one that appears last, but rather it will choose between them non-deterministically or randomly.
+
+  \end{answer}
+
+  \item The header files in a C program contain function
+    prototypes. What is a function prototype?
+
+  \begin{answer}
+
+  	A function prototype is a function declaration that gives the function's name and type signature, but does not specify the function body. It is also referred to as a function interface at times. In other languages these are uncommon because subprograms do not need declarations since they do no need to be defined before they are called.
+
+  \end{answer}
+
+  \item Every method in a Ruby program belongs to a class.
+    A programmer can place a definition of a method inside
+    the definition of a class or outside of the definition
+    of any class that the programmer writes. To which class
+    does the method belong in the second case?
+
+  \begin{answer}
+
+  	If a method is defined outside of the definition of any class that the programmer writes then the method belongs to the root object, \textbf{Object}.
+
+  \end{answer}
+
+  \item Distinguish between positional and keyword parameters.
+
+  \begin{answer}
+
+  	Positional parameters are bound based on the order in which they are given to the function. Keyword parameters are when the name of the formal parameter to which an actual parameter is to be bound is specified with the actual parameter in a call. This allows them to be input in any order.
+
+  \end{answer}
+
+  \item Ruby blocks are closures. What does that mean?
+
+  \begin{answer}
+
+    A closure is an anonymous function which can be passed as a parameter. Also, Ruby doesn't nest scope, so variables defined in a method are not accessible outside of the method (say, in the class which defines them).
+
+  \end{answer}
+
+  \item What is a pure function?
+
+  \begin{answer}
+
+  	A \textbf{pure function} is a \textbf{function} where the return value is only determined by its input values, without observable side effects.
+
+  \end{answer}
+
+  \item Some languages give programmers means to define
+    both functions and procedures. Java does not. Is that
+    a serious limitation?
+
+  \begin{answer}
+
+    It does not seem to be a serious limitation, it just means that performing procedures in Java is more verbose because it requires that the programmer instantiate the class with any needed methods.
+
+  \end{answer}
+
+  \item Declarations of formal parameters in an Ada procedure
+    can include, in addition to the names and types of the
+    parameters, reserved words that do not appear in declarations
+    in Java programs. 
+    What is the purpose of those reserved words?
+
+  \begin{answer}
+
+  	Ada allows the programmer to specify \textit{in} mode, \textit{out} mode, and \textit{inout} mode for each formal parameter.  This means that they can receive data from the actual parameter, they can send data to the actual parameter, or they can do both.
+
+  \end{answer}
+ 
+  \item The C language imposes a constraint upon programmers
+    who want to pass a multidimensional array to a function.
+    What is the constraint? How did the design of the Java
+    programming language eliminate that constraint for 
+    programmers who use that language?
+
+  \begin{answer}
+
+    In C, programmers are required to pass the length of an array to a method. Specifying the length of an array (like in C) is unnecessary because Java arrays store a pointer to an address containing their length.
+
+  \end{answer}
+
+  \item An activation record contains a return
+    address, a dynamic link, parameters, and
+    local variables.
+  \begin{enumerate}
+    \item To what does the return address point?
+    \item To what does the dynamic link point?
+    \end{enumerate}
+
+  \begin{answer}
+
+  	The return address usually consists of a pointer to the instruction following the call in the code segment of the calling program unit.  The dynamic link points to the base of the activation record instance of the caller.
+
+  \end{answer}
+
+  \item The stack will contain multiple activation
+    records for a single subprogram under what
+    circumstances?
+
+  \begin{answer}
+
+  	In a recursive program there can be multiple activation records (although they will be incomplete) for a single subprogram.
+
+  \end{answer}
+
+  \item How (or why?) does the LIFO protocol apply to
+    calls to and returns from subprograms?
+
+  \begin{answer}
+
+  	LIFO allows for subprograms to be nested within one another and for subprograms to be used as parameters within other subprograms.
+
+  \end{answer}
+
+  \item Which important development in computer architecture
+    has changed the way that the stack is used in some
+    systems for facilitating calls to and returns from
+    subprograms?
+
+  \begin{answer}
+
+  	RISC (reduced instruction set computing) machines have parameters passed in registers in their compilers because RISC machines have more registers than CISC (complex instruction set computing) machines. Chapter 10 assumes parameters are passed in the stack though, as they had been in CISC machines.
+
+  \end{answer}
+
+  \item A dynamic chain contains a history of what?
+
+  \begin{answer}
+
+  	A dynamic chain represents the dynamic history of how execution got to its current position, which is always in the subprogram code whose activation record instance is on top of the stack.
+
+  \end{answer}
+
+  \item Which two numbers are needed to compute
+    the address of a local variable in a subprogram?
+
+  \begin{answer}
+
+  	To compute the address of a local variable you need the (chain\_offset, local\_offset) pair.
+
+  \end{answer}
+
+  \item How does a Ruby module differ from a class?
+
+  \begin{answer}
+
+  	Modules are unlike classes in that they cannot be instantiated or subclassed and do not define variables. Methods that are defined in a module include the  module’s name in their names.
+
+  \end{answer}
+
+  \item Memory for variables can be allocated on the heap
+    and on the stack. In which place or places is memory
+    allocated for objects in C++? in Java?
+
+  \begin{answer}
+
+  	In C++, variables can be allocated to the heap either by making them “static” or by allocating memory with the keyword “new”. However, variables which are initialized during the execution of a function are allocated to the stack. Java behaves the same way.
+
+  \end{answer}
+
+  \item What problems were solved by the addition
+    of genericity to Java?
+
+  \begin{answer}
+
+  	Generics allow a type or method to operate on objects of various types while providing compile-time type safety.
+
+  \end{answer}
+
+  \item What is the purpose of the static chain?
+
+  \begin{answer}
+
+  	The static chain is a path of pointers which go from each function to its parent. They allow child subprograms to use variables which are local to their parent, grandparent, or farther up, without needing to copy those variables to the call stack.
+
+  \end{answer}
+
+  \item What is a singleton?
+
+  \begin{answer}
+
+  	A singleton is a class which provides a global access point to a single instance. This is useful for tasks which only need one point of access, like a file system.
+
+  \end{answer}
+
+  \item What are the two parts of the definition 
+    of an abstract data type?
+
+  \begin{answer}
+
+  	\begin{enumerate}
+
+  	  \item A type definition which allows program units to declare variables of the type but hides the representation of objects of the type.
+
+  	  \item A set of operations for manipulating objects of the type.
+
+  	\end{enumerate}
+
+  \end{answer}
+
+  \end{enumerate}
+
+

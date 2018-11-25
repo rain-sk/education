@@ -1,0 +1,100 @@
+package evilHangman;
+
+import java.util.Iterator;
+import java.util.Stack;
+
+/**
+ * This class serves as an Iterator for a Trie data structure.
+ * 
+ * @author Spencer Rudnick
+ */
+public class TrieIterator implements Iterator<String> {
+
+	// the Trie to be iterated through
+	private Trie trie;
+	
+	// pointer to traverse the Trie
+	private TrieNode curr;
+	
+	// stack to keep track of child indices
+	private Stack<Integer> stack;
+	
+	// counts how many words have been found
+	private int count;
+	
+	/**
+	 * Constructor for a TrieIterator.
+	 * 
+	 * @param t - the Trie to be iterated through
+	 */
+	public TrieIterator(Trie t) {
+		
+		// point trie to the passed Trie
+		trie = t;
+		
+		// start curr at the Trie's root node
+		curr = trie.root();
+		
+		// set up the stack
+		stack = new Stack<Integer>();
+		
+		// start count at 0
+		count = 0;
+		
+	} // end of TrieIterator constructor
+
+	/**
+	 * @return whether or not the iterator has anymore words
+	 */
+	public boolean hasNext() {
+		return count < trie.size();
+	} // end of hasNext method
+
+	/**
+	 * @return the next word in the Trie
+	 */
+	public String next() {
+		
+		if (curr.hasChildren())
+			curr = curr.getChild(stack.push(0));
+		else{
+			curr = curr.parent();
+			
+			while (!curr.hasNextChild(stack.peek())){
+				curr = curr.parent();
+				stack.pop();
+			}
+			curr = curr.getChild(stack.push(stack.pop() + 1));
+		}
+		
+		while (!curr.isEndOfWord())
+			curr = curr.getChild(stack.push(0));
+		
+		count++;
+		
+		return curr.getWord();
+	}
+
+	public void remove() {
+		
+		count--;
+		
+		trie.minusWord();
+		
+		curr.makeNotEnd();
+		
+		while (!curr.hasChildren() && !curr.isEndOfWord()){
+			curr.parent().remove(curr);
+			trie.minusNode();
+			curr = curr.parent();
+		}
+		
+		TrieIterator iter = new TrieIterator(trie);
+		
+		for (int i = 0; i < count; i += 1) iter.next();
+		
+		curr = iter.curr;
+		
+		stack = iter.stack;
+	}
+}

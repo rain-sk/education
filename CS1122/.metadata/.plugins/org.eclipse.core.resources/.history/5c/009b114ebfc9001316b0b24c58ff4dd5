@@ -1,0 +1,168 @@
+package evilHangman;
+
+import java.util.Iterator;
+
+/**
+ * This class defines a Trie data structure
+ * 
+ * @author Spencer Rudnick
+ */
+public class Trie implements Iterable<String>{
+	
+	// the root of the Trie
+	private TrieNode root;
+	
+	// counters to keep track of how many nodes and words are in the Trie
+	private int nodes;
+	private int words;
+
+	/**
+	 * Constructor for a Trie.
+	 */
+	public Trie(){
+		
+		// initialize root with the '^' marker
+		root = new TrieNode(null, '^', false);
+		
+		// initialize counters
+		nodes = 1;
+		words = 0;
+		
+	} // end of Trie constructor
+	
+	/**
+	 * Returns the root node of the Trie.
+	 * 
+	 * @return The root node of the Trie
+	 */
+	public TrieNode root(){
+		
+		return root;
+		
+	} // end of root method
+
+	/**
+	 * This method adds a word to the Trie
+	 * 
+	 * @param s - word to add to the Trie
+	 */
+	public void addWord(String s){
+		
+		// sanity check
+		if (hasWord(s)) return;
+		
+		// pointer to traverse the Trie
+		TrieNode curr = root;
+		
+		// iterate through the characters in the word
+		for (int i = 0; i < s.length(); i += 1){
+			
+			// if the next letter does not exist in the Trie
+			if (curr.nodeForLetter(s.charAt(i)) == null){
+				
+				// add it to curr's children
+				curr.addChild(s.charAt(i), i == s.length() - 1);
+				
+				// increment the node counter
+				nodes++;
+				
+			}
+			
+			// logic to deal with existing nodes which should end a word
+			else if (i == s.length() - 1) curr.nodeForLetter(s.charAt(i)).makeNotEnd();
+			
+			// take curr one step down the branch
+			curr = curr.nodeForLetter(s.charAt(i));
+			
+		}
+		
+		// increment the word counter
+		words++;
+		
+	} // end of addWord method
+
+	/**
+	 * This method should check the Trie to see if a word is stored in it.
+	 * 
+	 * @param s
+	 *            word you are looking for
+	 * @return true if the word is stored in the trie, false otherwise
+	 */
+	public boolean hasWord(String s){
+		
+		// iterate through the Trie and return true if the word being looked for is found
+		for (String word : this) if (s.equals(word)) return true;
+		
+		// return false otherwise
+		return false;
+		
+	} // end of hasWord method
+
+	/**
+	 * This method removes a word from the Trie. Nodes in the Trie that no
+	 * longer lead to words because of deletion should be pruned from the Trie,
+	 * as they are dead weight!
+	 * 
+	 * @param s - word to delete from the Trie
+	 */
+	public void deleteWord(String s) {
+		
+		// iterate through the Trie until the word being looked for is found, then remove it
+		Iterator<String> iter = iterator();
+		while (iter.hasNext()) if (iter.next().equals(s)) iter.remove();
+		
+	} // end of deleteWord method
+
+	/**
+	 * This method returns the total number of nodes in the trie.
+	 * 
+	 * @return number of letters in the trie
+	 */
+	public int nodeCount(){
+		return nodes;
+	} // end of nodeCount method
+	
+	/**
+	 * This method decrements the nodes counter (used by the iterator's .remove() method).
+	 */
+	public void minusNode(){
+		nodes--;
+	} // end of minusNode method
+
+	/**
+	 * This method returns the total number of unique words in the trie
+	 * 
+	 * @return number of unique words stored in the trie.
+	 */
+	public int size(){
+		return words;
+	} // end of size method
+	
+	/**
+	 * This method decrements the words counter (used by the iterator's .remove() method).
+	 */
+	public void minusWord(){
+		words--;
+	} // end of minusWord method
+
+	/**
+	 * This method returns an iterator for the trie, as required by the Iterable
+	 * interface.
+	 * 
+	 * @return and iterator for the trie.
+	 */
+	public Iterator<String> iterator(){
+		return new TrieIterator(this);
+	} // end of iterator method
+
+	/**
+	 * This method removes all entries from the trie using an iterator.
+	 */
+	public void clear(){
+		Iterator<String> iter = iterator();
+		while (iter.hasNext()) {
+			iter.next();
+			iter.remove();
+		}
+	} // end of clear method
+}

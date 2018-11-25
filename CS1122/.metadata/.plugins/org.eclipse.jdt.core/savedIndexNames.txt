@@ -1,0 +1,8 @@
+INDEX VERSION 1.126+/Users/Spencer/Documents/CS1122/.metadata/.plugins/org.eclipse.jdt.core
+3857418804.index
+541897914.index
+2872762723.index
+1134330240.index
+2252062478.index
+3084101011.index
+1920244509.index

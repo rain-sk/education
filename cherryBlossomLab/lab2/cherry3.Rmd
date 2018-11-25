@@ -1,0 +1,177 @@
+---
+title: "Data Cleaning and Reformatting Variables"
+author: "Spencer Rudnick & Nicholas Melon"
+date: "January 18, 2017"
+output: html_document
+---
+
+Today we are working through Section 2.3 of the [race results chapter](http://moodle.cornellcollege.edu/pluginfile.php/101067/mod_resource/content/1/Runners.pdf).
+
+#### Exercise 1
+
+You modified one line of code in the function **selectCols()** to handle inconsistencies in the formatting of the age column in 2003 and 2006.  Copy and paste the code for your updated function here.
+
+```{r}
+# helper function to be applied to each element in colNames
+findCol <- function(name, headerRow, searchLocs) {
+  # finds the start position of the name we are looking for
+  startPos <- regexpr(name, headerRow)[[1]]
+  # if start position == -1 then we return two NA values to in
+  # sure that a column with that name exists
+  if (startPos == -1) return( c(NA, NA) )
+  # the column's index in searchLocs
+  index <- sum(startPos >= searchLocs)
+  # returns the bounds of this column, accounting for potential deviations in formatting
+  c(searchLocs[index] + 1, searchLocs[index + 1])
+}
+
+# finds locations of columns we are searching for
+selectCols <- function(colNames, headerRow, searchLocs) {
+  # run findCol on each element in colNames
+  sapply(colNames, findCol(name, headerRow, searchLocs),
+  headerRow <- headerRow, searchLocs <- searchLocs )
+}
+```
+
+#### Exercise 2
+You are asked to modify the **extractVariables()** function to remove blank rows and footnote rows.  Copy and paste the code for your updated function below.
+
+*Hint*: If a file does not contain any blank rows or any footnote rows, you should not attempt to remove anything.  This is a good place for a conditional statement.
+
+```{r}
+extractVariables <- 
+  function(file, varNames = c("name", "home", "ag", "gun",
+                             "net", "time"))
+  {
+    # find the index of the row with =s
+    eqIndex <- grep("^===", file)
+    
+    # extract the two key rows
+    spacerRow <- file[eqIndex]
+    headerRow <- tolower(file[ eqIndex - 1 ])
+    
+    # extract body
+    body <- file[ -(1 : eqIndex) ]
+    
+    # remove annotations, footnotes, and blank lines
+    body <- body[-(c(grep("^\\#", body),grep("^\\*", body),grep("^[[:blank:]]*$", body)))]
+    
+    # Obtain the starting and ending positions of variables
+    searchLocs <- findColLocs(spacerRow)
+    locCols <- selectCols(varNames, headerRow, searchLocs)
+    Values <- mapply(substr, list(body), start <- locCols[1, ],
+                    stop <- locCols[2, ])
+    colnames(Values) <- varNames
+    invisible(Values)
+  }
+```
+
+Note that **extractVariables()** depends on the **findColLocs()** function that you wrote yesterday.  While this function remains unmodified, please include your code for completeness.  Define your **findColLocs()** function here.
+
+```{r}
+#findColLocs - locates columns by finding blank spaces in the "=" row
+findColLocs <- function(spacerRow) {
+  
+  spaceLocs <- gregexpr(" ", spacerRow)[[1]]          # populate vector with indices of ' ' in spacerRow
+  
+  rowLength <- nchar(spacerRow)                       # avoid problems with trailing ' '
+  if (substring(spacerRow, rowLength, rowLength) != " ")
+    return( c(0, spaceLocs, rowLength + 1))           # return column indicators
+  else return(c(0, spaceLocs))
+}
+```
+
+#### Exercise 3
+
+You wrote a function **convertTime()** for splitting the time field into its constituent pieces and converting it to minutes.  Define that function here.
+
+```{r}
+convertTime <- function(charTime) {
+  sapply(charTime, function(time) {
+    timePieces <- strsplit(time, ":")
+    timePieces <- sapply(timePieces, as.numeric)
+    
+    if(length(timePieces) == 2) {
+      timePieces[1] + timePieces[2]/60
+    } else {
+      timePieces[1]*60 + timePieces[2] + timePieces[3]/60
+    }
+  })
+}
+```
+
+#### Exercise 4
+
+You wrote a function **createDF()** to apply the conversions to the character matrices and return a data frame with the variables that we want to analyze.  Define that function below.  Be sure to include the modifications that eliminate the footnote symbols from the times and drop records of runners who do not complete the race.  
+```{r}
+createDF =
+function(Res, year, sex)
+{
+       # Determine which time to use
+  useTime <- if( !is.na(Res[1, 'net']) )
+              Res[ , 'net']
+            else if( !is.na(Res[1, 'gun']) )
+               Res[ , 'gun']
+            else
+               Res[ , 'time']
+  runTime <- convertTime(useTime)
+  Results <- data.frame(year = rep(year, nrow(Res)),
+                       sex = rep(sex, nrow(Res)),
+                       name = Res[ , 'name'],
+                       home = Res[ , 'home'],
+                       age = as.numeric(Res[, 'ag']),
+                       runTime = runTime,
+                       stringsAsFactors = FALSE)
+  invisible(Results)
+}
+```
+
+#### Exercise 5
+
+As noted in the text, there is an issue with the header for the 2006 file.  Specifically, we need to create a separation between the Hometown and Net Time columns by replacing an equal sign with a blank space.  Since this only happens in one file, you can simply open the text file, make the modification, and save it.  
+
+*Challenge for the bored*:  Fix this programmatically. While it is overkill in this case, the additional practice is good for sharpening your R skillz.
+
+#### Exercise 6
+
+Check your work.  Evaluate the following chunks of code.  Make sure that your output matches the output in `cherry3_out.html` before you continue.
+
+First, let's check that you can successfully create the combined data frame and that it has the proper dimensions.  Your data frame should have 70070 rows (one for each male runner) and 6 columns (one for each variable).
+
+```{r}
+mfilenames <- paste("MenTxt/", 1999:2012, ".txt", sep = "")
+menFiles <- lapply(mfilenames, readLines)
+names(menFiles) <- 1999:2012
+menResMat <- lapply(menFiles, extractVariables)
+
+menDF <- mapply(createDF, menResMat, year = 1999:2012, sex = rep("M", 14), SIMPLIFY=FALSE)
+cbMen <- do.call(rbind, menDF)
+save(cbMen, file = "cbMen.rda")
+
+dim(cbMen)
+```
+
+Now we make a box plot of age by year.  If your output does not match the output in `cherry3_out.html`, you may need to revisit Exercise 1.
+
+```{r eval=FALSE}
+boxplot(age ~ year, data = cbMen, ylab = "Age", xlab = "Year")
+```
+
+Next, we check the number of NA values for the age variable.  The large number of NAs we had in 2001 should be completely gone as well as many but not all of the NAs in the other years.  If your numbers differ from those in `cherry3_out.html`, you may need to revisit Exercise 2.
+
+```{r eval=FALSE}
+sapply(menDF, function(x) sum(is.na(x$age)))
+```
+
+Let's also check the number of NA values for the runTime variable.  If you still have NA values for runTime, you may need to revisit Exercises 3-5.
+
+```{r eval=FALSE}
+sapply(menDF, function(x) sum(is.na(x$runTime)))
+```
+
+#### Exercise 7
+
+You used boxplots of age by year in this section to look for problems with the data set.  Now go back to those boxplots and discuss what they tell you about the ages of the athletes in this race over the years.  Is there information about the distribution of ages that you would like, that the boxplots don't tell you?  How else might you find look at this data?  (You do not need to actually create other visualizations, just discuss what you would like to do.)
+
+##
+It appears from the boxplots that the average age of runners is decreasing over time. Although there also appears to be an increasing number of outliers located in the upper range of runner ages. We would like to see if the percentage of runners from 50 to 90 is changing, or if the percieved increase in outliers is a result of more people running in the race over time, and a lower mean age.  I would like to see pie charts for individual years which allow us to see age ranges as part of the total.

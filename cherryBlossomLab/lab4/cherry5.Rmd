@@ -1,0 +1,146 @@
+---
+title: "Exploring the Run Time for Individual Runners"
+author: "Nicholas Melon & Spencer Rudnick"
+date: "January 20, 2017"
+output: html_document
+---
+
+Today we are working through Sections 2.5 and 2.6 of the [race results chapter](http://moodle.cornellcollege.edu/pluginfile.php/101067/mod_resource/content/1/Runners.pdf).
+
+#### Exercise 1
+Section 2.5 guides you through the process of extracting records for individual runners who have run in at least 8 of the 14 races.  Insert your code below and verify that you find 306 such runners.
+```{r eval=FALSE}
+setwd("~/Workspace/CSC 255/cherryLab")
+load("cbMen.rda")
+cbMenSub <- cbMen[cbMen$runTime > 30 & !is.na(cbMen$age) & cbMen$age > 15, ]
+
+trimBlanks <- function(charVector) {
+  nameClean <- gsub("^[[:blank:]]+", "", charVector)
+  nameClean <- gsub("[[:blank:]]+$", "", nameClean)
+  nameClean <- gsub("[[:blank:]]+", " ", nameClean)
+}
+
+# prepare dataframe
+cbMenSub$nameClean <- gsub("[,.]", "", tolower(trimBlanks(cbMenSub$name)))
+cbMenSub$homeClean <- gsub("[,.]", "", tolower(trimBlanks(cbMenSub$home)))
+cbMenSub$yob <- cbMenSub$year - cbMenSub$age
+homeLen <- nchar(cbMenSub$homeClean)
+cbMenSub$state <- substr(cbMenSub$homeClean,
+                        start = homeLen - 1, stop = homeLen)
+cbMenSub$state[cbMenSub$year == 2006] <- NA
+cbMenSub$ID <- paste(cbMenSub$nameClean, cbMenSub$yob,
+                    cbMenSub$state, sep = "_")
+
+# get list of runners who have participated in eight runs
+numRaces <- tapply(cbMenSub$year, cbMenSub$ID, length)
+races8 <- names(numRaces)[which(numRaces >= 8)]
+men8 <- cbMenSub[ cbMenSub$ID %in% races8, ]
+orderByRunner <- order(men8$ID, men8$year)
+men8 <- men8[orderByRunner, ]
+men8L <- split(men8, men8$ID)
+names(men8L) <- races8
+
+length(men8L)
+```
+
+#### Exercise 2
+Recreate Figure 2.17:  Run Times for Multiple Races.  
+```{r}
+setwd("~/Workspace/CSC 255/cherryLab")
+load("cbMen.rda")
+cbMenSub <- cbMen[cbMen$runTime > 30 & !is.na(cbMen$age) & cbMen$age > 15, ]
+trimBlanks <- function(charVector) {
+  nameClean <- gsub("^[[:blank:]]+", "", charVector)
+  nameClean <- gsub("[[:blank:]]+$", "", nameClean)
+  nameClean <- gsub("[[:blank:]]+", " ", nameClean)
+}
+
+# prepare dataframe
+cbMenSub$nameClean <- gsub("[,.]", "", tolower(trimBlanks(cbMenSub$name)))
+cbMenSub$homeClean <- gsub("[,.]", "", tolower(trimBlanks(cbMenSub$home)))
+cbMenSub$yob <- cbMenSub$year - cbMenSub$age
+homeLen <- nchar(cbMenSub$homeClean)
+cbMenSub$state <- substr(cbMenSub$homeClean,
+                        start = homeLen - 1, stop = homeLen)
+cbMenSub$state[cbMenSub$year == 2006] <- NA
+cbMenSub$ID <- paste(cbMenSub$nameClean, cbMenSub$yob,
+                    cbMenSub$state, sep = "_")
+
+# get list of runners who have participated in eight runs
+numRaces <- tapply(cbMenSub$year, cbMenSub$ID, length)
+races8 <- names(numRaces)[which(numRaces >= 8)]
+men8 <- cbMenSub[ cbMenSub$ID %in% races8, ]
+orderByRunner <- order(men8$ID, men8$year)
+men8 <- men8[orderByRunner, ]
+men8L <- split(men8, men8$ID)
+names(men8L) <- races8
+
+groups <- 1 + (1:length(men8L) %% 9)
+
+plot( x = 40, y = 60, type = "n",
+      xlim = c(20, 80), ylim = c(40, 160),
+      xlab = "Age (years)", ylab = "Run Time (minutes)")
+
+addRunners <- function(listRunners, colors, numLty){
+  numRunners <- length(listRunners)
+  colIndx <- 1 + (1:numRunners) %% length(colors)
+  ltys <- rep((1:numLty), each = length(colors),
+             length = numRunners)
+  mapply(function(df, i) {
+    lines(df$runTime ~ df$age,
+    col = colors[colIndx[i]], lwd = 2, lty = ltys[i])
+  }, listRunners, i = 1:numRunners)
+}
+
+colors <- c("#e41a1c", "#377eb8","#4daf4a", "#984ea3",
+           "#ff7f00", "#a65628")
+par(mfrow = c(3, 3), mar = c(2, 2, 1, 1))
+invisible(
+  sapply(1:9, function(grpId){
+    plot( x = 0, y = 0, type = "n",
+          xlim = c(20, 80), ylim = c(50, 130),
+          xlab = "Age (years)", ylab = "Run Time (minutes)")
+    addRunners(men8L[ groups == grpId ], colors, numLty = 6)
+  }) )
+
+```
+
+#### Exercise 3
+Recreate Figure 2.19:  Coefficients from Longitudinal Analysis of Athletes.  
+```{r}
+fitOne <- function(oneRunner, addLine = FALSE, col = "grey") {
+  lmOne <- lm(runTime ~ age, data = oneRunner)
+  if (addLine) {
+    lines(x = oneRunner$age, y = predict(lmOne),
+          col = col, lwd = 2, lty = 2)
+  }
+  ind <- floor( (nrow(oneRunner) + 1) / 2)
+  res <- c(coefficients(lmOne)[2], oneRunner$age[ind],
+           predict(lmOne)[ind])
+  names(res) = c("ageCoeff", "medAge", "predRunTime")
+  return(res)
+}
+
+men8LongFit <- lapply(men8L, fitOne)
+coeffs <- sapply(men8LongFit, "[", "ageCoeff" )
+ages <- sapply(men8LongFit, "[", "medAge")
+
+plot(coeffs~ages, xlab = "Median Age (years)", ylab = "Coefficient (minutes per race/year)", col="black", pch=16, cex=.4)
+
+
+abline(lm(coeffs ~ ages), col="purple")
+abline(h=0, col="blue")
+
+lo <- loess(coeffs~ages)
+agel <- seq(min(ages),max(ages), (max(ages) - min(ages))/1000)
+lines(agel, predict(lo, agel), col="green", lwd = 2)
+```
+
+#### Exercise 4
+In Section 2.5, the book asked you to determine that a runner was the same if they had the same name, year of birth, and state.  Discuss the pros and cons to using these three variables to determine which runners are actually the same.  Are you comfortable that in most cases, the process will identify people properly?  What are the ramifications if you are not identifying people properly?
+
+While many runners may have the same name, and several of those may also live in the same state, it is unlikely that they will additionally be the same age. Relying on these three variables makes counting multiple people as one person much less likely. Cons include misidentifying a runner who has moved to a new state. Also, we had to completely disregard the 2006 data because it was missing state / province information.
+
+In most cases, I believe this process will effectively identify individual runners. There will obviously be some outliers, including people whose birthdays take place during the week of the races, and people who have moved one or more times to a different state / province.
+
+One ramification of the potential to misidentify people is that we will have biased data, in some cases over-counting an individual, and in other cases under-counting them.

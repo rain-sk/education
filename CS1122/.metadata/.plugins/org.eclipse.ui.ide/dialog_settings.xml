@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ExternalProjectImportWizard">
+		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
+		<item value="true" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
+		<item value="false" key="WizardProjectsImportPage.STORE_NESTED_PROJECTS"/>
+		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="/Users/Spencer/Downloads/Prog6CS1122"/>
+			<item value="/Users/Spencer/Downloads/Lecture31_EvenMoreBinarySearchTree"/>
+			<item value="/Users/Spencer/Downloads/Prog5CS1122"/>
+			<item value="/Users/Spencer/Downloads/Prog4SpringCS1122Starter"/>
+			<item value="/Users/Spencer/Documents/CS1122/Prog3CS1122_updated"/>
+		</list>
+		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
+			<item value=""/>
+		</list>
+	</section>
+</section>

@@ -1,0 +1,15 @@
+Other things to understand:
+
+Linked Lists
+
+	-Duh
+
+Iterators:
+
+	-How to get an iterator:
+
+		Iterator<DataType> iter = new DataStructure.iterator();
+
+	-Traverse by calling iter.next();
+
+	-Check whether you can continue traversing by calling iter.hasNext();

@@ -1,0 +1,64 @@
+---
+title: "Scraping Race Results from the Web"
+author: "Nicholas Melon & Spencer Rudnick"
+date: "January 23, 2017"
+output: html_document
+---
+
+Today we are working through Section 2.7 of the [race results chapter](http://moodle.cornellcollege.edu/pluginfile.php/101067/mod_resource/content/1/Runners.pdf).
+
+#### Exercise 1
+You wrote a function **extractResTable()** that takes as input the URL for a Web page containing race results, finds the preformatted text, and returns a character vector of the table of results.  Be sure to include code to handle the special cases of the 2000 and 2009 data.
+```{r}
+library(XML)
+
+extractResTable =
+       # Retrieve data from web site, find preformatted text,
+       # return as a character vector.
+  function(url)
+  {
+    doc <- htmlParse(url)
+    preNode <- getNodeSet(doc, "//pre")
+    txt <- xmlValue(preNode[[1]])
+    els <- strsplit(txt, "\r\n")[[1]]
+    return(els)
+  }
+
+ubase <- "http://www.cherryblossom.org/"
+menURLs =
+  c("cb99m.htm", "cb003m.htm", "results/2001/oof_m.html",
+    "results/2002/oofm.htm", "results/2003/CB03-M.HTM",
+    "results/2004/men.htm", "results/2005/CB05-M.htm",
+    "results/2006/men.htm", "results/2007/men.htm",
+    "results/2008/men.htm", "results/2009/09cucb-M.htm",
+    "results/2010/2010cucb10m-m.htm",
+    "results/2011/2011cucb10m-m.htm",
+    "results/2012/2012cucb10m-m.htm")
+urls = paste(ubase, menURLs, sep = "")
+
+menTables <- lapply(urls, extractResTable)
+
+
+
+# put your code here!
+```
+
+#### Exercise 2
+Check your work by evaluating the following chunk of code.  Make sure that your output for this chunk matches the output in `cherry7_out.html`. 
+```{r eval=FALSE}
+ubase <- "http://www.cherryblossom.org/"
+menURLs <-
+  c("cb99m.htm", "cb003m.htm", "results/2001/oof_m.html",
+    "results/2002/oofm.htm", "results/2003/CB03-M.HTM",
+    "results/2004/men.htm", "results/2005/CB05-M.htm",
+    "results/2006/men.htm", "results/2007/men.htm",
+    "results/2008/men.htm", "results/2009/09cucb-M.htm",
+    "results/2010/2010cucb10m-m.htm",
+    "results/2011/2011cucb10m-m.htm",
+    "results/2012/2012cucb10m-m.htm")
+urls <- paste(ubase, menURLs, sep = "")
+years <- 1999:2012
+menTables <- mapply(extractResTable, url = urls, year = years)
+names(menTables) <- years
+sapply(menTables, length)
+```

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="cse452shell">
+</Property><Property Name="Solution File" Value="C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shell.sln">
+</Property><Property Name="User Options File" Value="C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shell.suo">
+</Property><Property Name="Date" Value="Sunday, May 7, 2017">
+</Property><Property Name="Time" Value="17:47 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="cse452shell.sln" Description="File successfully backed up as C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shell.sln.old">
+</Event><Event ErrorLevel="0" Project="" Source="cse452shell.suo" Description="File successfully backed up as C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shell.suo.old">
+</Event><Event ErrorLevel="0" Project="cse452shell" Source="cse452shell.vcproj" Description="Converting project file 'C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shell.vcproj'.">
+</Event><Event ErrorLevel="1" Project="cse452shell" Source="cse452shell.vcproj" Description="This application has been updated to include settings related to the User Account Control (UAC) feature of Windows Vista. By default, when run on Windows Vista with UAC enabled, this application is marked to run with the same privileges as the process that launched it. This marking also disables the application from running with virtualization. You can change UAC related settings from the Property Pages of the project.">
+</Event><Event ErrorLevel="1" Project="cse452shell" Source="cse452shell.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="cse452shell" Source="cse452shell.vcproj" Description="Web deployment to the local IIS server is no longer supported. The Web Deployment build tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="cse452shell" Source="cse452shell.vcproj" Description="MSB8012: $(TargetPath) ('d:/temp/netR\cse452shell.exe') does not match the Linker's OutputFile property value 'cse452shell.exe' ('C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shell.exe') in project configuration 'Release|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="1" Project="cse452shell" Source="cse452shell.vcproj" Description="MSB8012: $(TargetName) ('cse452shell') does not match the Linker's OutputFile property value 'cse452shellDB.exe' ('cse452shellDB') in project configuration 'Debug|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetName) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="1" Project="cse452shell" Source="cse452shell.vcproj" Description="MSB8012: $(TargetPath) ('d:/temp/netDB\cse452shell.exe') does not match the Linker's OutputFile property value 'cse452shellDB.exe' ('C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shellDB.exe') in project configuration 'Debug|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="0" Project="cse452shell" Source="cse452shell.vcproj" Description="Done converting to new project file 'C:\Users\Spencer\Desktop\cse452files\cse452\cse452shell\cse452shell.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="cse452shell" Source="cse452shell.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="cse452shell.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="cse452shell.sln" Description="Converted">
+</Event></UpgradeLog>

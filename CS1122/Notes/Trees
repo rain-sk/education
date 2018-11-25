@@ -1,0 +1,73 @@
+Trees
+=====
+
+Trees consist of nodes, where each node has 0 or more children and each node has a single parent. The entire tree stems from one node known as the "root node." Nodes with no children are called "leaf nodes." Nodes that have children and are not the root are called "inner nodes." Nodes that share a parent are called "siblings."
+
+	Tree Terminology:
+
+		-When deterining the "height" of the tree, you DON'T count the root.
+
+		-To determine the "depth" of a node, start counting from the root, counting from 0.
+
+Traversals:
+
+	Pre-Order Traversal
+		-Visit the root.
+		-Traverse the left subtree.
+		-Traverse the right subtree.
+
+	Post-Order Traversal
+		-Traverse the left subtree.
+		-Traverse the right subtree.
+		-Visit the root.
+
+	In-Order Traversal
+		-Traverse the left subtree.
+		-Visit the root.
+		-Traverse the right subtree.
+
+Binary Search Trees
+-------------------
+
+A binary search tree is a tree where each node has 0, 1, or 2 children. The left child must have a value less than its parent; the right child must have a value greater than its parent.
+
+If the tree is kept ballanced, it allows you to search for values in O(lg n) time.
+
+A totally unballanced search tree is a linked list.
+
+Heaps
+-----
+
+A heap is a binary tree with the following restrictions:
+
+	-It must be "complete." This means every level is full except
+	 the last level, and the last level is filled up from left to right.
+
+	-Depending on if it's a min or max heap, every child must have
+	 a value greater-than / less-than its parent.
+
+Heaps are virtually always implemented with arrays (good CPU cache behavior).
+
+	Algorithms:
+
+		Adding an element to the heap:
+
+			-Put the element to be added at the end of the array. Then you check
+			 whether the heap property has been broken. If so, swap the child 
+			 and its parent and repeat until the heap is no longer broken.
+
+		Removing the root of the heap:
+
+			-Delete and return the root. Move the last element of the heap to the root.
+			 Compare values, swap as needed, repeat until heap is repaired.
+
+Both insertion and deletion are O(lg n) operations.
+
+	Heap Sort (pretty awesome)
+	---------
+
+	(1)
+	First thing heap sort does is build a heap out of an unordered collection of elements. This step is O(n lg n).
+
+	(2)
+	Repeatedly pop the root off the heap and put it at the beginning / end of a sorted array (depending on if we're doing increasing / decreasing order and whether we're dealing with a min / max heap).

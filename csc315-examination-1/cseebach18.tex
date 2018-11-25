@@ -1,0 +1,324 @@
+
+\chapter{Cameron Seebach}
+
+\begin{enumerate}
+  \item Most programming languages require the use of brackets to
+    enclose the index in a reference to an element of an array.
+  \begin{enumerate}
+    \item Identify a language the requires the use of parentheses
+      to enclose the index in a reference to an element of an array.
+    \item Why did the designers of the language choose parentheses
+      rather than brackets?
+    \end{enumerate}
+
+  \begin{answer}
+
+  \begin{enumerate}
+    \item The original FORTRAN used parentheses to to enclose an array
+      reference.
+    \item At the time FORTRAN was first introduced, keypunch machines did not
+      include the square bracket keys.
+    \end{enumerate}
+
+    \end{answer}
+
+  \item What is the relationship between a lexeme and a token?
+
+  \begin{answer}
+    Lexemes and tokens are both produced by the lexer. A lexeme is a string that
+    makes up some symbol in the language, while a token describes a whole
+    category of lexemes.
+
+    For example, an identifier lexeme is commonly a string of characters a-z and
+    underscore. Regardless of what characters are chosen, the token is still
+    identifier.
+    \end{answer}
+
+  \item
+  \begin{enumerate}
+    \item What kind of symbols are found at the internal nodes of a
+      parse tree?
+    \item What kind of symbols are found at the leaves of a parse tree?
+    \end{enumerate}
+
+  \begin{answer}
+
+  \begin{enumerate}
+    \item Non-terminal symbols are found at the internal nodes of a parse tree.
+    \item Terminal symbols are found at the leaves of a parse tree. All the
+      non-terminals have been replaced at the leaves of the tree.
+    \end{enumerate}
+
+    \end{answer}
+
+
+  \item One of the most significant contributions from the developers
+    of ALGOL 60 also limited the success of that language. What was
+    that contribution?
+
+  \begin{answer}
+
+    Backus-Naur form described the syntax of ALGOL 60 in a way that was new
+    and unfamiliar at the time.
+
+    \end{answer}
+
+  \item What problem were the creators of Common LISP trying to solve?
+
+  \begin{answer}
+
+    The creators of Common LISP sought to combine several different dialects of
+    Lisp, including Scheme, into one language.
+
+    \end{answer}
+
+  \item What is an ambiguous context free grammar?
+
+  \begin{answer}
+
+    It is a context free grammar that can describe more than one distinct parse
+    tree.
+
+    \end{answer}
+
+  \item Contrast the complexity of algorithms that can parse strings
+    that conform to the most general kinds of context free grammars
+    and the complexity of the algorithms that can parse strings that
+    conform to the grammars of programming languages?
+
+  \begin{answer}
+
+    Algorithms that parse the most general CFGs have a time complexity of
+    O(n**3). For a programming language grammar, algorithms exist that run in
+    O(n) time.
+
+    \end{answer}
+
+  \item Java represents characters with Unicode. It is the first
+    widely used programming language with this feature. What is the
+    significance of this feature?
+
+  \begin{answer}
+
+    It is easier to write programs intended for an international audience in
+    Java. Less special work is required to support character sets outside of
+    ASCII.
+
+    \end{answer}
+
+  \item How does the binary coded decimal type differ from the
+    floating point type?
+
+  \begin{answer}
+
+    Binary coded decimal typically allows for a fixed number of digits before
+    the decimal point, and a fixed number of digits afterwards. By contrast,
+    floating point types have a number of digits of precision which is not
+    related to the location of the decimal point.
+
+    Also, binary coded decimal is typically made up of groups of 4 bits (0-F),
+    each four bits representing a digit (0-9). As a result, a binary coded
+    decimal number takes more bits than a floating point number to store the
+    same number.
+
+    \end{answer}
+
+  \item Identify a user-defined ordinal type in the Java programming
+    language.
+
+  \begin{answer}
+
+    The user-defined ordinal type in Java is the Enum.
+
+    \end{answer}
+
+  \item Mathematicians and programmers might have different ideas
+    about the precedence of Boolean operators. Explain.
+
+  \begin{answer}
+
+    In mathematics, AND and OR have the same precendence, but in the C language
+    AND has a higher precedence.
+
+    \end{answer}
+
+  \item Programmers should use \verb+===+ rather than \verb+==+ to
+    test the equality of the values of two expressions in JavaScript. Why?
+
+  \begin{answer}
+
+    Equality of strings and other objects is the best reason to use one over the
+    other. \verb+===+ compares the content of two objects or strings,
+    while \verb+==+ compares only the identity.
+
+    \end{answer}
+
+  \item Describe a hazard of allowing short-circuited evaluation
+    of expressions and side effects in expressions at the same time.
+
+  \begin{answer}
+
+    If the expression with a side effect is placed second in a short-circuit
+    operation, it may not always be applied if the operation short-circuits.
+
+    This can lead to a situation where a programmer thinks that a mutating
+    change has occurred, when in fact it has not.
+
+    \end{answer}
+
+  \item Briefly describe the three steps in the mark-sweep algorithm
+    for garbage collection.
+
+  \begin{answer}
+
+    \begin{enumerate}
+      \item Traverse the tree of objects reachable from the `root set', marking
+        each as in-use.
+      \item Scan all memory, freeing objects which are not in-use.
+      \item Reset the in-use flag on each object still extant.
+
+      \end{enumerate}
+
+    \end{answer}
+
+  \item What led Yukihiro Matsumoto to create the Ruby programming language?
+
+  \begin{answer}
+
+    Matsumoto wanted an easy, truly object-oriented scripting language, but
+    didn't like the options available at that time in 1993.
+
+    \end{answer}
+
+  \item What did Microsoft aim to achieve with its development of the
+    C\# language?
+
+  \begin{answer}
+
+    Microsoft aimed to have a flagship language similar to C and C++ for use
+    with its new Common Language Runtime. Portability and general-purposeness
+    were other important design goals.
+
+    \end{answer}
+
+  \end{enumerate}
+
+\section{More questions for discussion and review.}
+
+\begin{enumerate}
+  \item The design of which machine influenced the design
+    of the control statements in FORTRAN?
+
+  \item How many different kinds of control statements
+    must the designer of a programming language include
+    in a language?
+
+  \item What is the one question that applies in the
+    design of all statements that allow selection or
+    iteration?
+
+  \item What is an advantage of requiring that
+    the \textbf{then} and \textbf{else} clauses of
+    an \textbf{if} statement be compound statements?
+
+  \item How does the \textbf{switch} statement in C\#
+    differ from the \textbf{switch} statement in Java?
+
+  \item Distinguish between 2 statements in Ruby
+    that correspond to Java's \textbf{switch} statement.
+
+  \item Features of a programming language sometimes persist
+    longer than a feature of computing hardware that inspired
+    and supported that part of the language's design.
+    Similarly, features of hardware sometimes persist longer
+    than some parts of a language's design that were created
+    to take advantage of that feature in hardware.
+
+    Give examples.
+
+  \item Who most famously warned of the dangers of using the
+    \textbf{goto} statement? What did Donald Knuth have to
+    say about the use of the \textbf{goto} statement?
+
+  \item Describes Ada's \textbf{for} loop. Are there some
+    kinds of iteration that might be easier in Ada than
+    in Java? Easier in Java than in Ada?
+
+  \item What does it mean to say that the guarded commands
+    of Ada are non-deterministic?
+
+  \item The header files in a C program contain function
+    prototypes. What is a function prototype?
+
+  \item Every method in a Ruby program belongs to a class.
+    A programmer can place a definition of a method inside
+    the definition of a class or outside of the definition
+    of any class that the programmer writes. To which class
+    does the method belong in the second case?
+
+  \item Distinguish between positional and keyword parameters.
+
+  \item Ruby blocks are closures. What does that mean?
+
+  \item What is a pure function?
+
+  \item Some languages give programmers means to define
+    both functions and procedures. Java doe not. Is that
+    a serious limitation?
+
+  \item Declarations of formal parameters in an Ada procedure
+    can include, in addition to the names and types of the
+    parameters, reserved words that do not appear in declarations
+    in Java programs. 
+    What is the purpose of those reserved words?
+ 
+  \item The C language imposes a constraint upon programmers
+    who want to pass a multidimensional array to a function.
+    What is the constraint? How did the design of the Java
+    programming language eliminate that constraint for 
+    programmers who use that language?
+
+  \item An activation record contains a return
+    address, a dynamic link, parameters, and
+    local variables.
+  \begin{enumerate}
+    \item To what does the return address point?
+    \item To what does the dynamic link point?
+    \end{enumerate}
+
+  \item The stack will contain multiple activation
+    records for a single subprogram under what
+    circumstances?
+
+  \item How (or why?) does the LIFO protocol apply to
+    calls to and returns from subprograms?
+
+  \item Which important development in computer architecture
+    has changed the way that the stack is used in some
+    systems for facilitating calls to and returns from
+    subprograms?
+
+  \item A dynamic chain contains a history of what?
+
+  \item Which two numbers are needed to compute
+    the address of a local variable in a subprogram?
+
+  \item How does a Ruby module differ from a class?
+
+  \item Memory for variables can be allocated on the heap
+    and on the stack. In which place or places is memory
+    allocated for objects in C++? in Java?
+
+  \item What problems were solved by the addition
+    of genericity to Java?
+
+  \item What is the purpose of the static chain?
+
+  \item What is a singleton?
+
+  \item What are the two parts of the definition 
+    of an abstract data type?
+
+  \end{enumerate}
+
+

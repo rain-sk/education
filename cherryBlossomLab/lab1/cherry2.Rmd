@@ -1,0 +1,116 @@
+---
+title: "Reading Tables of Race Results into R"
+author: "Spencer Rudnick, Nicholas Melon"
+date: "January 17, 2017"
+output: html_document
+---
+
+Begin by reading through Section 2.2 of the [race results chapter](http://moodle.cornellcollege.edu/pluginfile.php/101067/mod_resource/content/1/Runners.pdf).  This book is meant to be read interactively.  You should have RStudio open as you read, and when you encounter code in the text, you should type those commands into RStudio.  Do you get the same results as shown in the text?  Do you understand how each snippet of code does what it does?  If not, ask your partner.  If you are both stumped, ask your professor.  Once you have worked through the entire section, complete the exercises below.
+
+Note that to get started, you need to have the raw text tables of race results downloaded to your machine.  Download this [zip file](http://moodle.cornellcollege.edu/mod/resource/view.php?id=72024).  It containts two directories, one for the men's data and one for the women's data, each of which contains 14 text files, one for each year.  Extract the files to your working directory.
+
+#### Exercise 1
+
+You wrote a function **findColLocs()** for finding the starting and ending positions of the columns.  Define that function here.
+
+```{r}
+
+# | findColLocs
+# |
+# | spacerRow:  a row defining columns with "=" and " "
+# | return:     a vector containing the indices of the start of each column
+
+findColLocs <- function(spacerRow) {
+  # create a vector with indices of " " characters in spacerRow
+  spaceLocs <- gregexpr(" ", spacerRow)[[1]]
+  
+  # safeguard against last char == " " by adding extra element to returned vector
+  rowLength <- nchar(spacerRow)
+  if (substring(spacerRow, rowLength, rowLength) != " ")
+    return( c(0, spaceLocs, rowLength + 1))
+  else return(c(0, spaceLocs))
+}
+```
+
+#### Exercise 2
+
+You wrote a function **selectCols()** for extracting the locations of the desired columns.  Define that function here.
+
+```{r}
+
+# helper function to be applied to each element in colNames
+findCol <- function(name, headerRow, searchLocs) {
+  # finds the start position of the name we are looking for
+  startPos <- regexpr(name, headerRow)[[1]]
+  # if start position == -1 then we return two NA values to in 
+  # sure that a column with that name exists
+  if (startPos == -1) return( c(NA, NA) )
+  # the column's index in searchLocs
+  index <- sum(startPos >= searchLocs)
+  # returns the bounds of this column, accounting for potential deviations in formatting
+  c(searchLocs[index] + 1, searchLocs[index + 1])
+}
+
+# finds locations of columns we are searching for
+selectCols <- function(colNames, headerRow, searchLocs) {
+  # run findCol on each element in colNames
+  sapply(colNames, findCol(name, headerRow, searchLocs),
+  headerRow <- headerRow, searchLocs <- searchLocs )
+}
+```
+
+#### Exercise 3
+
+Finally, you wrote a function **extractVariables()** for extracting specified columns of data from a raw text table.  Define that function here.
+
+```{r}
+# | extractVariables
+# |
+# | reads a file and returns an object containing the data for
+# | each corresponding column labeled with an element in varNames
+extractVariables <- 
+  function(file, varNames = c("name", "home", "ag", "gun",
+                             "net", "time"))
+  {
+    # Find the index of the row with =s
+    eqIndex <- grep("^===", file)
+    # Extract the two key rows and the data
+    spacerRow <- file[eqIndex]
+    headerRow <- tolower(file[ eqIndex - 1 ])
+    body <- file[ -(1 : eqIndex) ]
+    # Obtain the starting and ending positions of variables
+    searchLocs <- findColLocs(spacerRow)
+    locCols <- selectCols(varNames, headerRow, searchLocs)
+    Values <- mapply(substr, list(body), start <- locCols[1, ],
+                    stop <- locCols[2, ])
+    colnames(Values) <- varNames
+    invisible(Values)
+  }
+```
+
+#### Exercise 4
+
+Check your work.  Now that you have defined the functions in Exercises 1-3, evaluate the following chunck of code.  Make sure that your output for this chunck matches the output in `cherry2_out.html` before you continue.
+
+```{r eval=FALSE}
+mfilenames <- paste("MenTxt/", 1999:2012, ".txt", sep = "")
+menFiles <- lapply(mfilenames, readLines)
+names(menFiles) <- 1999:2012
+
+menResMat <- lapply(menFiles, extractVariables)
+
+length(menResMat)
+sapply(menResMat, nrow)
+```
+
+#### Exercise 5
+
+Functions are an essential construct in computer programming.  They allow us to clearly separate tasks within a program, and they provide a general mechanism that enables us to reuse code.  Indeed, one of the great benefits of using R is that you can easily make use of many functions written by others without having to worry about how those functions are implemented.  You just need to know some basic information about what the function does, what it takes as inputs, and what it returns as outputs.  
+
+Much work has gone into making R self-documenting.  For example, to get information on the **seq()** function, type this:
+
+```{r}
+?seq
+```
+
+Write your own documentation for each of the functions that you implemented in Exercises 1-3.  Your documentation should begin with a brief description of what the function does.  List and describe each of the arguments or inputs to the function.  Describe the return value or outupt from the function.  Finally, provide some examples of executable R code showing how to use the funtion.  At least one of your examples for each function should be different from those provided in the text.

@@ -1,0 +1,118 @@
+package evilHangman;
+
+import java.util.Iterator;
+import java.util.Stack;
+
+/**
+ * This class serves as an Iterator for a Trie data structure.
+ * 
+ * @author Spencer Rudnick
+ */
+public class TrieIterator implements Iterator<String>{
+
+	// the Trie to be iterated through
+	private Trie trie;
+	
+	// pointer to traverse the Trie
+	private TrieNode curr;
+	
+	// stack to keep track of child indices
+	private Stack<Integer> stack;
+	
+	// counts how many words have been visited
+	private int visited;
+	
+	/**
+	 * Constructor for a TrieIterator.
+	 * 
+	 * @param t - the Trie to be iterated through
+	 */
+	public TrieIterator(Trie t){
+		
+		// point trie to the passed Trie
+		trie = t;
+		
+		// start curr at the Trie's root node
+		curr = trie.root();
+		
+		// set up the stack
+		stack = new Stack<Integer>();
+		
+		// start count at 0
+		visited = 0;
+		
+	} // end of TrieIterator constructor
+
+	/**
+	 * @return whether or not the iterator has any more words
+	 */
+	public boolean hasNext(){
+		return visited < trie.size();
+	} // end of hasNext method
+
+	/**
+	 * @return the next word in the Trie
+	 */
+	public String next(){
+		
+		// sanity check
+		if (visited >= trie.size()) return "There's nothing left!";
+		
+		// if curr has children, set curr to be its first child
+		if (curr.hasChildren()) curr = curr.getChild(stack.push(0));
+		
+		// otherwise, climb the parent-branch until an unvisited branch is found
+		else{
+			curr = curr.parent();
+			while (!curr.hasNextChild(stack.peek())){
+				curr = curr.parent();
+				stack.pop();
+			}
+			curr = curr.getChild(stack.push(stack.pop() + 1));
+		}
+		
+		// traverse down the left-most sub-branch until the end of a word is found
+		while (!curr.isEndOfWord()) curr = curr.getChild(stack.push(0));
+		
+		// increment the counter
+		visited++;
+		
+		// return the word completed by curr
+		return curr.getWord();
+		
+	} // end of next method
+
+	/**
+	 * This method removes the most recently visited word from the Trie and
+	 * also deletes nodes from the Trie that no longer lead to complete words.
+	 */
+	public void remove(){
+		
+		// sanity check
+		if (visited == 0) return;
+		
+		// decrement visited and the Trie's word counter
+		visited--;
+		trie.minusWord();
+		
+		// remove curr's end-status
+		curr.makeNotEnd();
+		
+		// remove all nodes that no longer lead to a valid word
+		while (!curr.hasChildren() && !curr.isEndOfWord()){
+			curr.parent().remove(curr);
+			trie.minusNode();
+			curr = curr.parent();
+		}
+		
+		// iterate to the previous node
+		TrieIterator iter = new TrieIterator(trie);
+		for (int i = 0; i < visited; i += 1) iter.next();
+		
+		// set this iterator's curr and stack pointers to point to the new iterator's pointers
+		curr = iter.curr;
+		stack = iter.stack;
+		
+	} // end of remove method
+	
+} // end of TrieIterator class

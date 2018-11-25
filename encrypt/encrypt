@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# This script accepts a text file
+# and outputs an encrypted version
+# of the file.
+
+letters $1 | uppercase | shiftc | format

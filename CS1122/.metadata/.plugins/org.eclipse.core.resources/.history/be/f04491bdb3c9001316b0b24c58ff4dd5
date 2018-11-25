@@ -1,0 +1,84 @@
+package evilHangman;
+
+import java.util.ArrayList;
+
+/**
+ * This class serves as nodes in the Trie structure
+ * 
+ * @author Spencer Rudnick
+ * 
+ */
+public class TrieNode {
+	
+	private TrieNode parent;
+	
+	private ArrayList<TrieNode> children;
+	
+	private char value;
+	
+	private boolean end;
+	
+	public TrieNode(TrieNode p, char v, boolean e){
+		
+		parent = p;
+		
+		children = new ArrayList<TrieNode>();
+		
+		value = v;
+		
+		end = e;
+		
+	}
+	
+	public TrieNode parent(){
+		return parent;
+	}
+	
+	public void remove(TrieNode n){
+		children.remove(n);
+	}
+	
+	public boolean hasNextChild(int i){
+		return i < children.size() - 1;
+	}
+	
+	public TrieNode addChild(char v, boolean e){
+		
+		// sanity check
+		if (nodeForLetter(v) != null) return nodeForLetter(v);
+		
+		// make a new node
+		TrieNode newNode = new TrieNode(this, v, e);
+		
+		// insert newNode into children at the correct location
+		for (int i = 0; i < children.size(); i += 1){
+			if (children.get(i).value > v){
+				children.add(i, newNode);
+				return newNode;
+			}
+		}
+		children.add(newNode);
+		return newNode;
+		
+	}
+
+	public TrieNode nodeForLetter(char c) {
+		for (TrieNode node : children) if (node.value == c) return node;
+		return null;
+	}
+	
+	public TrieNode getChild(int i){
+		if (i >= 0 && i < children.size()) return children.get(i);
+		return null;
+	}
+	
+	public boolean hasChildren(){
+		return children.size() > 0;
+	}
+
+	public boolean isEndOfWord() {
+		return end;
+	}
+
+	/* You are allowed to add more methods to this class as needed. */
+}

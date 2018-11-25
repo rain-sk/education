@@ -1,0 +1,40 @@
+Priority Queues
+---------------
+
+-Add elements with a priority
+
+-Each of the elements in the priority queue is known as an Entry
+
+-Each Entry has a Key and a Value
+
+-Key: for assigning the priority
+
+-Value: the element stored with that Key
+
+-Heaps are very good for implementing priority queues.
+		-They have efficient runtimes for getting
+		 the minimum/maximum element and sorting
+		 themselves so that the min/max can be
+		 retrieved quickly
+		-O(lg n)
+
+-We use Comparable and Comparators
+
+-Comparator is an interface which forces you to implement the compare() method
+
+-Another method is compareTo(). The difference between compare() and compareTo() is:
+
+		-compare() takes two objects and compares them
+
+				-returns:
+					<0 if first argument is less than second
+					>0 if first argument is greater than second
+					0 if they are equal
+
+		-compareTo() takes one object and compares it
+		 to the current object
+
+				-returns:
+					0 if argument is equal
+					>0 if the argument is greater than the current object
+					<0 if the argument is less than the current object

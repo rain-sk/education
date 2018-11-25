@@ -1,0 +1,71 @@
+package evilHangman;
+
+import java.util.Iterator;
+import java.util.Stack;
+
+public class TrieIterator implements Iterator<String> {
+
+	private Trie trie;
+	
+	private TrieNode curr;
+	
+	private Stack<Integer> stack;
+	
+	private int count;
+	
+	public TrieIterator(Trie t) {
+		trie = t;
+		
+		curr = trie.root();
+		
+		stack = new Stack<Integer>();
+		
+		count = 0;
+	}
+
+	public boolean hasNext() {
+		return count < trie.size();
+	}
+
+	public String next() {
+		
+		if (curr.hasChildren())
+			curr = curr.getChild(stack.push(0));
+		else{
+			curr = curr.parent();
+			
+			while (!curr.hasNextChild(stack.peek())){
+				curr = curr.parent();
+				stack.pop();
+			}
+			curr = curr.getChild(stack.push(stack.pop() + 1));
+		}
+		
+		while (!curr.isEndOfWord())
+			curr = curr.getChild(stack.push(0));
+		
+		count++;
+		
+		return curr.getWord();
+	}
+
+	public void remove() {
+		
+		count--;
+		
+		trie.minusWord();
+		
+		curr.makeNotEnd();
+		
+		while (!curr.hasChildren() && !curr.isEndOfWord()){
+			curr.parent().remove(curr);
+			trie.minusNode();
+			curr = curr.parent();
+		}
+		
+		
+		
+		
+		// TODO
+	}
+}
